@@ -174,7 +174,7 @@ bool System::build_information(const Index &index, Subsystem &particles)
     for(size_t i : index[p])
     {
       double e(0.0);
-      particles[i].r = Vector<double, 3>({0.0});
+      particles[i].r = {0.0};
       for(size_t m : particles[i].mothers)
       {
         e += particles[m].e;

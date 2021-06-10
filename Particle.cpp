@@ -37,7 +37,7 @@ istream &operator>>(istream &is, Particle &p)
     if(i)
       p.daughters.insert(i);
 
-  p.r = Vector<double, 3>({0.0});
+  p.r = {0.0};
   p.v = pb.getv();
   p.phase = PHASE_UNDEF;
   p.death = PHASE_UNDEF;
