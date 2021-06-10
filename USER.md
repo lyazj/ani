@@ -70,6 +70,8 @@
 
 输入输出运算底层调用数据类型`T`定义的输入输出运算符，流状态的改变由后者决定。调用者有义务检查流状态的有效性。
 
+**程序不保证退回无效流状态时被作用操作数的状态不发生变化**。
+
 ### `Particle_Base`类
 
 粒子的基类，定义在头文件`Particle.h`中。
@@ -158,20 +160,43 @@
     std::set<size_t> mothers;
     std::set<size_t> daughters;
 
-粒子的母亲和女儿们。程序确保使用`<<`算符读入`Particle`类时为`mothers`和`daughters`提供正确的值，它们可能显著地不同于基类定义的同名元素。注意到，它们的类型也与基类不同，这是因为每个粒子的`mothers`和`daughters`数量都不尽相同。
+粒子的母亲和女儿们。程序使用`<<`算符读入`Particle`类时将为根据基类`Particle_Base`中同名元素的值为`mothers`和`daughters`赋值，后者可能与前者显著不同。注意到，二者被声明为不同的类型，这是因为每个粒子真实的母亲和女儿数量都不尽相同，而我们定义的`Particle::mothers`和`Particle::daughters`需要反映真实的情况，这有别于`Particle_Base`中同名元素的结果。因为后者来自`pythia8`的日志文件，在日志文件中每个粒子的`mothers`和`daughters`有且仅有两列，其信息分开来看都是不完整的。
 
-具体地，经过程序自动调用的`System::preprocess()`函数加工后，粒子体系（`Subsystem`）符合以下规则：
+后文将提到程序使用`System`类控制程序所有的行为，其中定义了类型成员`System::Subsystem`，为`std::vector<Particle>`的类型别名。程序对每个`Subsystem`实例中的`Particle`有以下要求：
 
-- （规定）任何一对母女关系都同时存在于母粒子的`Particle::daughters`和女粒子的`Particle::mothers`中
-- （规定）`Particle::daughters`中不含有`0`
-- （推论）编号为`0`的`system`没有母亲
-- （规定）如果原始数据`Particle_Base::mothers`中粒子除了`0`以外没有其他母亲，则`Particle::mothers`中粒子有且仅有`0`这个母亲
-- （规定）如果原始数据`Particle_Base::mothers`中粒子除了`0`以外含有其他母亲，则`Particle::mothers`中粒子没有`0`这个母亲
+1. 任何一对母女关系都同时存在于母粒子的`Particle::daughters`和女粒子的`Particle::mothers`中
+2. `Particle::daughters`中不含有`0`
+3. 编号为`0`的粒子（其`name`为`system`）没有母亲
+4. 如果`Particle_Base::mothers`中仅含有`0`元素，则`Particle::mothers`中仅含有`0`
+5. 如果`Particle_Base::mothers`中含有非`0`元素，则`Particle::mothers`中不含有`0`
 
-以上规则可以唯一地由`Particle_Base`中的`mothers`和`daughters`得到`Particle`中的同名元素。
+根据以上规则可以唯一地由`Particle_Base`中的`mothers`和`daughters`得到`Particle`中的同名元素。
+
+我们约定规则2、3、4、5由`Particle`类的`<<`算符保证，而规则1由`System`类的行为保证。
 
     Vector<double, 3> r;
+
+粒子的坐标信息，由`<<`算符赋`0`值，由`System`类进行后续操作。
+
     Vector<double, 3> v;
+
+粒子的速度信息，由`<<`算符赋值为基类成员函数`Particle_Base::getv()`的运算结果。原则上程序的其他部分不应改动该值。
+
     size_t phase;
 
+粒子出现的时段数(phase)，由`<<`算符赋值为`PHASE_UNDEF`。
 
+    size_t death;
+
+粒子死亡的时段数(phase)，由`<<`算符赋值为`PHASE_UNDEF`。
+
+#### 输入输出
+
+    std::istream &operator>>(std::istream &, Particle_Base &);
+    std::istream &operator>>(std::istream &, Particle &);
+
+基类`Particle_Base`的输入函数从第一个实参绑定的输入流中顺序读入粒子信息，赋值给相应成员。
+
+派生类`Particle`的输入函数首先调用基类`Particle_Base`的输入函数读入信息，检查流状态有效后根据上面的规则为其成员赋值。
+
+**程序不保证退回无效流状态时被作用操作数的状态不发生变化**。
