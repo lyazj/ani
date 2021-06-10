@@ -66,11 +66,11 @@
     template<class T, size_t n>
     std::istream &operator>>(std::istream &, Vector<T, n> &);
     template<class T, size_t n>
-    std::istream &operator<<(std::istream &, Vector<T, n> &);
+    std::ostream &operator<<(std::ostream &, const Vector<T, n> &);
 
 输入输出运算底层调用数据类型`T`定义的输入输出运算符，流状态的改变由后者决定。调用者有义务检查流状态的有效性。
 
-**程序不保证退回无效流状态时被作用操作数的状态不发生变化**。
+**程序不保证输入流退回无效状态时被作用操作数的状态不发生变化**。
 
 ### `Particle_Base`类
 
@@ -199,4 +199,4 @@
 
 派生类`Particle`的输入函数首先调用基类`Particle_Base`的输入函数读入信息，检查流状态有效后根据上面的规则为其成员赋值。
 
-**程序不保证退回无效流状态时被作用操作数的状态不发生变化**。
+**程序不保证输入流退回无效状态时被作用操作数的状态不发生变化**。
