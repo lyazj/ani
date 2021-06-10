@@ -106,7 +106,7 @@
 
     size_t daughters[2];
 
-从日志文件获得的粒子`daughter`信息，有固定长度`2`。同样该信息不是完善的。
+从日志文件获得的粒子`daughters`信息，有固定长度`2`。同样该信息不是完善的。
 
     short colours[2];
 
@@ -150,3 +150,28 @@
 
     #define PHASE_UNDEF ((size_t)-1)
     #define PHASE_MIN   ((size_t) 0)
+
+注意`(size_t) 0`为`size_t`类型元素的最小值，`(size_t)-1`为`size_t`类型元素的最大值，这对后面我们的运算规则十分重要。
+
+#### 数据成员
+
+    std::set<size_t> mothers;
+    std::set<size_t> daughters;
+
+粒子的母亲和女儿们。程序确保使用`<<`算符读入`Particle`类时为`mothers`和`daughters`提供正确的值，它们可能显著地不同于基类定义的同名元素。注意到，它们的类型也与基类不同，这是因为每个粒子的`mothers`和`daughters`数量都不尽相同。
+
+具体地，经过程序自动调用的`System::preprocess()`函数加工后，粒子体系（`Subsystem`）符合以下规则：
+
+- （规定）任何一对母女关系都同时存在于母粒子的`Particle::daughters`和女粒子的`Particle::mothers`中
+- （规定）`Particle::daughters`中不含有`0`
+- （推论）编号为`0`的`system`没有母亲
+- （规定）如果原始数据`Particle_Base::mothers`中粒子除了`0`以外没有其他母亲，则`Particle::mothers`中粒子有且仅有`0`这个母亲
+- （规定）如果原始数据`Particle_Base::mothers`中粒子除了`0`以外含有其他母亲，则`Particle::mothers`中粒子没有`0`这个母亲
+
+以上规则可以唯一地由`Particle_Base`中的`mothers`和`daughters`得到`Particle`中的同名元素。
+
+    Vector<double, 3> r;
+    Vector<double, 3> v;
+    size_t phase;
+
+
