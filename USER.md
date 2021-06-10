@@ -114,15 +114,15 @@
 
     Vector<double, 3> p;
 
-粒子的动量信息，存储为直角坐标系下的三个分量。其单位一般为${\rm GeV}/c$。
+粒子的动量信息，存储为直角坐标系下的三个分量。其单位一般为GeV/c。
 
     double e;
 
-粒子的能量信息。其单位一般为$\rm GeV$。
+粒子的能量信息。其单位一般为GeV。
 
     double m;
 
-粒子的静质量信息。其单位一般为${\rm GeV}/c^2$。
+粒子的静质量信息。其单位一般为GeV/c^2。
 
 #### 成员函数
 
@@ -130,20 +130,16 @@
 
 根据狭义相对论关系有：
 
-$$
-
-    \vec p = \frac{m\vec v}{\sqrt{1 - (v / c)^2}},\
+<img src="http://latex.codecogs.com/gif.latex?
+    \vec p = \frac{m\vec v}{\sqrt{1 - (v / c)^2}},\ 
     E = \frac{mc^2}{\sqrt{1 - (v / c)^2}}
-
-$$
+"/>
 
 则：
 
-$$
-
+<img src="http://latex.codecogs.com/gif.latex?
     \vec v / c = \frac{\vec p / ({\rm GeV}/c)}{E / {\rm GeV}}
-
-$$
+"/>
 
 ### `Particle`类
 
