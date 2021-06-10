@@ -72,7 +72,7 @@ bool System::preprocess()
   return preprocess(hard) && preprocess(complete);
 }
 
-bool System::preprocess(vector<Particle> &particles)
+bool System::preprocess(Subsystem &particles)
 {
   for(size_t i = 0; i < particles.size(); ++i)
   {
@@ -98,8 +98,7 @@ bool System::build_index()
   return hard_index_built && complete_index_built;
 }
 
-bool System::build_index(
-    vector<vector<size_t>> &index, vector<Particle> &particles)
+bool System::build_index(Index &index, Subsystem &particles)
 {
   try {
     for(size_t i = 0; i < particles.size(); ++i)
@@ -119,8 +118,7 @@ bool System::build_index(
   return true;
 }
 
-size_t System::get_phase(
-    size_t no, std::vector<Particle> &particles)
+size_t System::get_phase(size_t no, Subsystem &particles)
 {
   if(particles[no].phase == PHASE_UNDEF)
   {
@@ -139,7 +137,7 @@ size_t System::get_phase(
   return particles[no].phase;
 }
 
-const std::vector<std::vector<size_t>> &System::get_hard_index()
+const vector<vector<size_t>> &System::get_hard_index()
 {
   if(!hard_index_built &&
       !(hard_index_built = build_index(hard_index, hard)))
@@ -148,7 +146,7 @@ const std::vector<std::vector<size_t>> &System::get_hard_index()
   return hard_index;
 }
 
-const std::vector<std::vector<size_t>> &System::get_complete_index()
+const vector<vector<size_t>> &System::get_complete_index()
 {
   if(!complete_index_built &&
       !(complete_index_built = build_index(complete_index, complete)))
@@ -169,8 +167,7 @@ bool System::build_information()
   return true;
 }
 
-bool System::build_information(
-    const vector<vector<size_t>> &index, vector<Particle> &particles)
+bool System::build_information(const Index &index, Subsystem &particles)
 {
   for(size_t p = 0; p < index.size(); ++p)
   {
@@ -193,8 +190,8 @@ bool System::build_information(
   return true;
 }
 
-ostream &System::print(ostream &os, const vector<vector<size_t>> &index,
-    const vector<Particle> &particles) const
+ostream &System::
+print(ostream &os, const Index &index, const Subsystem &particles) const
 {
   Particle_Printer printer(os, no_width, name_width, e_width, phase_width);
   for(size_t p = 0; p < index.size(); ++p)
@@ -208,8 +205,8 @@ ostream &System::print(ostream &os, const vector<vector<size_t>> &index,
   return os;
 }
 
-ostream &System::print_all(ostream &os, const vector<vector<size_t>> &index,
-    vector<Particle> particles) const
+ostream &System::
+print_all(ostream &os, const Index &index, Subsystem particles) const
 {
   Particle_Printer printer(os, no_width, name_width, e_width, phase_width);
   for(size_t p = 0; p < index.size(); ++p)
@@ -253,17 +250,17 @@ ostream &operator<<(ostream &os, System &_s)
   _s.build_information();
   System s(_s);
   os << fixed << setprecision(3);
-  os << "******************** hard process (new) ********************\n" << endl;
+  os << "********** hard process (new) **********\n" << endl;
   s.print(os, s.hard_index, s.hard);
-  os << "******************** end of listing ********************\n" << endl;
-  os << "******************** hard process (all) ********************\n" << endl;
+  os << "********** end of listing **********\n" << endl;
+  os << "********** hard process (all) **********\n" << endl;
   s.print_all(os, s.hard_index, s.hard);
-  os << "******************** end of listing ********************\n" << endl;
-  os << "******************** complete process (new) ********************\n" << endl;
+  os << "********** end of listing **********\n" << endl;
+  os << "********** complete process (new) **********\n" << endl;
   s.print(os, s.complete_index, s.complete);
-  os << "******************** end of listing ********************\n" << endl;
-  os << "******************** complete process (all) ********************\n" << endl;
+  os << "********** end of listing **********\n" << endl;
+  os << "********** complete process (all) **********\n" << endl;
   s.print_all(os, s.complete_index, s.complete);
-  os << "******************** end of listing ********************\n" << endl;
+  os << "********** end of listing **********\n" << endl;
   return os << defaultfloat;
 }

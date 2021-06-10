@@ -16,39 +16,38 @@ class System {
 
 public:
   std::string description;
-  std::vector<Particle> hard;
-  std::vector<Particle> complete;
 
+  typedef std::vector<Particle> Subsystem;
+  Subsystem hard;
+  Subsystem complete;
+
+  typedef std::vector<std::vector<size_t>> Index;
   bool build_index();
-  const std::vector<std::vector<size_t>> &get_hard_index();
-  const std::vector<std::vector<size_t>> &get_complete_index();
+  const Index &get_hard_index();
+  const Index &get_complete_index();
+
   bool build_information();
 
-  size_t prolong = (size_t)0;
+  size_t prolong = 0;
 
 private:
-  std::vector<std::vector<size_t>> hard_index;
-  std::vector<std::vector<size_t>> complete_index;
-  size_t no_width = (size_t)0;
-  size_t name_width = (size_t)0;
-  size_t e_width = (size_t)0;
-  size_t phase_width = (size_t)0;
+  Index hard_index;
+  Index complete_index;
+  size_t no_width = 0;
+  size_t name_width = 0;
+  size_t e_width = 0;
+  size_t phase_width = 0;
   bool hard_index_built = false;
   bool complete_index_built = false;
   bool information_built = false;
 
-  static bool build_index(
-      std::vector<std::vector<size_t>> &, std::vector<Particle> &);
-  bool build_information(
-      const std::vector<std::vector<size_t>> &, std::vector<Particle> &);
+  static bool build_index(Index &, Subsystem &);
+  bool build_information(const Index &, Subsystem &);
   bool preprocess();
-  static bool preprocess(std::vector<Particle> &particles);
-  static size_t get_phase(
-      size_t no, std::vector<Particle> &particles);
-  std::ostream &print(std::ostream &,
-      const std::vector<std::vector<size_t>> &,
-      const std::vector<Particle> &) const;
-  std::ostream &print_all(std::ostream &,
-      const std::vector<std::vector<size_t>> &,
-      std::vector<Particle>) const;
+  static bool preprocess(Subsystem &);
+  static size_t get_phase(size_t no, Subsystem &);
+  std::ostream &
+    print(std::ostream &, const Index &, const Subsystem &) const;
+  std::ostream &
+    print_all(std::ostream &, const Index &, Subsystem) const;
 };
