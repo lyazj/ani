@@ -74,11 +74,6 @@ bool System::preprocess()
 
 bool System::preprocess(vector<Particle> &particles)
 {
-  for(size_t i = 1; i < particles.size(); ++i)
-    if(particles[i].mothers.empty())
-      particles[0].daughters.insert(i);
-    else
-      break;
   for(size_t i = 0; i < particles.size(); ++i)
   {
     if(particles[i].no != i)
@@ -134,9 +129,6 @@ size_t System::get_phase(
       throw runtime_error("ERROR: Maximum recursive depth exceeded.");
     ++depth;
     particles[no].phase = PHASE_MIN;
-    if(particles[no].mothers.empty() && no)
-      clog << "WARNING: No mother detacted of particle " << no
-           << "?!" << endl;
     for(size_t m : particles[no].mothers)
     {
       particles[no].phase = max(

@@ -2,6 +2,7 @@
 #include "System.h"
 
 #include <fstream>
+#include <memory>
 
 using namespace std;
 
@@ -15,26 +16,9 @@ int simulate(istream &is, ostream &os, int prolong)
 int simulate(const string &infile, const string &outfile, int prolong)
 {
   ifstream ifs;
-  istream *pis;
-  if(infile == "-")
-    pis = &cin;
-  else
-  {
-    ifs.open(infile);
-    pis = &ifs;
-  }
-
   ofstream ofs;
-  ostream *pos;
-  if(outfile == "-")
-    pos = &cout;
-  else
-  {
-    ofs.open(outfile);
-    pos = &ofs;
-  }
-
-  return simulate(*pis, *pos, prolong);
+  return simulate(infile == "-" ? cin : (ifs.open(infile), ifs),
+      outfile == "-" ? cout : (ofs.open(outfile), ofs), prolong);
 }
 
 extern "C" {

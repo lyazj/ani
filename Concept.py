@@ -41,7 +41,10 @@ except:
   os.system(f'{make} {clean} && {make} {soname}'
       f' -j {mp.cpu_count()} -e OUTER_CXXFLAGS=-m{mbits}')
   simulate = ctypes.CDLL(sofile).simulate_prolong
-if not simulate(infile.encode(), outfile.encode(), 15):
+
+prolong = 15
+
+if not simulate(infile.encode(), outfile.encode(), prolong):
   with open(outfile, 'r') as of:
     out = of.read()
   beg = out.find('\n', out.find('complete process (all)')) + 1

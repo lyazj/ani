@@ -4,9 +4,10 @@
 
 #include <string>
 
-int simulate(std::istream &is, std::ostream &os, int prolong = 0);
-int simulate(const std::string &infile,
-    const std::string &outfile, int prolong = 0);
+int simulate(std::istream &is, std::ostream &os,
+    int prolong = 0);
+int simulate(const std::string &infile, const std::string &outfile,
+    int prolong = 0);
 
 extern "C" {
 

@@ -4,9 +4,9 @@
 
 #include <stddef.h>
 
+#include <set>
 #include <string>
 #include <sstream>
-#include <set>
 #include <iostream>
 
 #define PHASE_UNDEF ((size_t)-1)
@@ -48,8 +48,8 @@ struct { } endp;
 
 class Particle_Printer {
 public:
-  Particle_Printer(std::ostream &s,
-      size_t no, size_t name, size_t e, size_t ph)
+  Particle_Printer(std::ostream &s, size_t no,
+      size_t name, size_t e, size_t ph)
     : os(s), no_width(no),
       name_width(name), e_width(e), phase_width(ph) { }
   Particle_Printer &operator<<(const Particle &p);

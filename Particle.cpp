@@ -24,14 +24,19 @@ istream &operator>>(istream &is, Particle &p)
   is >> pb;
   if(!is)
     return is;
+
   p.mothers.clear();
   for(size_t i : pb.mothers)
     if(i)
       p.mothers.insert(i);
+  if(p.mothers.empty() && pb.no)
+    p.mothers.insert(0);
+
   p.daughters.clear();
   for(size_t i : pb.daughters)
     if(i)
       p.daughters.insert(i);
+
   p.r = Vector<double, 3>({0.0});
   p.v = pb.getv();
   p.phase = PHASE_UNDEF;
@@ -55,7 +60,7 @@ Particle_Printer &Particle_Printer::operator<<(const Particle &p)
   os << setw(e_width) << p.e << "  ";
   os << setw(e_width) << p.m << "  ";
   os << setw(phase_width)
-     << make_signed<size_t>::type(p.death);
+     << typename make_signed<size_t>::type(p.death);
   return *this;
 }
 

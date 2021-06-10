@@ -24,7 +24,7 @@ public:
   const std::vector<std::vector<size_t>> &get_complete_index();
   bool build_information();
 
-  size_t prolong = 0;
+  size_t prolong = (size_t)0;
 
 private:
   std::vector<std::vector<size_t>> hard_index;
