@@ -130,11 +130,11 @@
 
 根据狭义相对论关系有：
 
-<img src="http://latex.codecogs.com/gif.latex?\vec p = \frac{m\vec v}{\sqrt{1 - (v / c)^2}},\ E = \frac{mc^2}{\sqrt{1 - (v / c)^2}}" />
+<img src="https://latex.codecogs.com/gif.latex?\vec%20p%20=%20\frac{m\vec%20v}{\sqrt{1%20-%20(v%20/%20c)^2}},\%20E%20=%20\frac{mc^2}{\sqrt{1%20-%20(v%20/%20c)^2}}" />
 
 则：
 
-<img src="http://latex.codecogs.com/gif.latex?\vec v / c = \frac{\vec p / ({\rm GeV}/c)}{E / {\rm GeV}}" />
+<img src="https://latex.codecogs.com/gif.latex?\vec%20v%20/%20c%20=%20\frac{\vec%20p%20/%20({\rm%20GeV}/c)}{E%20/%20{\rm%20GeV}}" />
 
 ### `Particle`类
 
