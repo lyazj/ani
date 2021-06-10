@@ -160,7 +160,7 @@
     std::set<size_t> mothers;
     std::set<size_t> daughters;
 
-粒子的母亲和女儿们。程序使用`<<`算符读入`Particle`类时将为根据基类`Particle_Base`中同名元素的值为`mothers`和`daughters`赋值，后者可能与前者显著不同。注意到，二者被声明为不同的类型，这是因为每个粒子真实的母亲和女儿数量都不尽相同，而我们定义的`Particle::mothers`和`Particle::daughters`需要反映真实的情况，这有别于`Particle_Base`中同名元素的结果。因为后者来自`pythia8`的日志文件，在日志文件中每个粒子的`mothers`和`daughters`有且仅有两列，其信息分开来看都是不完整的。
+粒子的母亲和女儿们。程序使用`>>`算符读入`Particle`类时将为根据基类`Particle_Base`中同名元素的值为`mothers`和`daughters`赋值，后者可能与前者显著不同。注意到，二者被声明为不同的类型，这是因为每个粒子真实的母亲和女儿数量都不尽相同，而我们定义的`Particle::mothers`和`Particle::daughters`需要反映真实的情况，这有别于`Particle_Base`中同名元素的结果。因为后者来自`pythia8`的日志文件，在日志文件中每个粒子的`mothers`和`daughters`有且仅有两列，其信息分开来看都是不完整的。
 
 后文将提到程序使用`System`类控制程序所有的行为，其中定义了类型成员`System::Subsystem`，为`std::vector<Particle>`的类型别名。程序对每个`Subsystem`实例中的`Particle`有以下要求：
 
@@ -172,23 +172,23 @@
 
 根据以上规则可以唯一地由`Particle_Base`中的`mothers`和`daughters`得到`Particle`中的同名元素。
 
-我们约定规则2、3、4、5由`Particle`类的`<<`算符保证，而规则1由`System`类的行为保证。
+我们约定规则2、3、4、5由`Particle`类的`>>`算符保证，而规则1由`System`类的行为保证。
 
     Vector<double, 3> r;
 
-粒子的坐标信息，由`<<`算符赋`0`值，由`System`类进行后续操作。
+粒子的坐标信息，由`>>`算符赋`0`值，由`System`类进行后续操作。
 
     Vector<double, 3> v;
 
-粒子的速度信息，由`<<`算符赋值为基类成员函数`Particle_Base::getv()`的运算结果。原则上程序的其他部分不应改动该值。
+粒子的速度信息，由`>>`算符赋值为基类成员函数`Particle_Base::getv()`的运算结果。原则上程序的其他部分不应改动该值。
 
     size_t phase;
 
-粒子出现的时段数(phase)，由`<<`算符赋值为`PHASE_UNDEF`。
+粒子出现的时段数(phase)，由`>>`算符赋值为`PHASE_UNDEF`。
 
     size_t death;
 
-粒子死亡的时段数(phase)，由`<<`算符赋值为`PHASE_UNDEF`。
+粒子死亡的时段数(phase)，由`>>`算符赋值为`PHASE_UNDEF`。
 
 #### 输入输出
 
