@@ -24,10 +24,7 @@ struct Particle_Base {
   double e;
   double m;
   
-  Vector<double, 3> getv() const
-  {
-    return p / e;
-  }
+  Vector<double, 3> getv() const { return p / e; }
   virtual ~Particle_Base() { }
 };
 
