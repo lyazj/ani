@@ -11,15 +11,39 @@
 
     template<class T, size_t n> struct Vector;
 
-#### 拷贝控制
+#### 初始化和拷贝控制成员
 
-    (implicitly declared default/list/copy/move constructor)
+    (implicitly declared default/copy/move constructor)
     (implicitly declared copy/move assignment operator)
     (implicitly declared destructor)
 
-同`std::array`，使用[聚合类(`aggregate`)隐式定义的拷贝控制成员](https://en.cppreference.com/w/cpp/language/aggregate_initialization)，需要注意默认初始化可能带来随机初始值问题。
+同`std::array`，遵循[聚合类(`aggregate`)隐式定义的初始化规则](https://en.cppreference.com/w/cpp/language/aggregate_initialization)，在`C++11`及以后标准下支持直接/拷贝列表初始化。需要注意默认初始化可能带来随机初始值问题。
 
-在`C++11`及以后标准下支持列表初始化。
+##### 如何方便地初始化和为`Vector`对象赋值
+
+构造未初始化的`Vector`对象（包含垃圾值）：
+
+    Vector<double, 3> v;
+
+使用初始化列表对类型实例进行值初始化（避免垃圾值）：
+
+    Vector<double, 3> v1{ };
+    Vector<double, 3> v2 = { };
+    Vector<double, 3> v3{1.0, 2.0};
+    Vector<double, 3> v4 = {1.0, 2.0};
+
+使用既有`Vector`对象对新对象进行拷贝初始化：
+
+    auto v5(v4);
+    auto v6{v5};
+    auto v7 = v6;
+    auto v8 = {v7};
+
+使用列表初始化器对`Vector`对象进行拷贝赋值：
+
+    v = { };
+    v1 = {2.0, 3.0};
+    v2 = {4.0, 5.0, 6.0};
 
 #### 数据成员
 
@@ -74,15 +98,15 @@
 
 ### `Particle_Base`类
 
-粒子的基类，定义在头文件`Particle.h`中。
+粒子的基类，定义在头文件`Particle.h`中。用于支持直接从输入流中读取`pythia8`的日志信息。每个`Particle_Base`类完整而原始地包含了`pythia8`日志提供的一个粒子的信息。
 
 #### 拷贝控制
 
-    (implicitly declared default/list/copy/move constructor)
+    (implicitly declared default/copy/move constructor)
     (implicitly declared copy/move assignment operator)
     virtual ~Particle_Base();
 
-除留空的虚析构函数外，使用聚合类的合成拷贝控制成员。
+除留空的虚析构函数外，使用编译器合成的拷贝控制成员。
 
 #### 数据成员
 
