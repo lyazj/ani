@@ -292,6 +292,66 @@
 
 其行为见[特殊控制变量](#特殊控制变量)部分说明。
 
-    Particle_Printer &operator<<(const Particle &p);
+    Particle_Printer &operator<<(const Particle &);
 
 向绑定的输出流中打印粒子信息。详见具体输出。
+
+### `System`类
+
+控制系统类，用于控制程序面向用户的主要功能。`System`类定义在头文件`System.h`中，大多数功能实现于源文件`System.cpp`中。
+
+#### 类型成员
+
+    typedef std::vector<Particle> Subsystem;
+
+每个`std::vector<Particle>`对象通常有序地包含`pythia8`一个日志列表中的所有粒子，我们将其定义为程序处理的一个子系统（`Subsystem`）。
+
+    typedef std::vector<std::vector<size_t>> Index;
+
+索引类型定义。这是一个二维索引结构，其第一个下标为粒子出现的时期，称为时段数（`phase`）。对`Index`对象进行下标运算得到一个`std::vector<size_t>`对象的引用，称为子索引。每个子索引无序地包含了一个时段数下所有粒子的编号（`no`）。
+
+#### 初始化和拷贝控制
+
+    (implicitly declared default/copy/move constructor)
+    (implicitly declared copy/move assignment operator)
+    (implicitly declared destructor)
+
+`System`类无显式定义的拷贝控制成员，但为部分数据成员提供了类内初始值，它们对`System`对象的状态是十分重要的。用户对`System`对象的操作主要通过成员函数和输入输出运算完成。
+
+#### 数据成员
+
+    std::string description;
+
+存储来自`pythia8`日志的介绍信息，由输入算符获取。
+
+    Subsystem hard;
+    Subsystem complete;
+
+程序需要处理的两个子系统，即硬过程和完整过程，由成员函数控制访问和修改，用户一般无需直接修改。
+
+    size_t prolong = 0;
+
+指定在最大时段数的粒子处理完毕后需要延长的时段数，默认为0，用户可以直接修改。
+
+#### 函数成员
+
+    bool build_index();
+    const Index &get_hard_index();
+    const Index &get_complete_index();
+
+与索引相关的成员函数。
+
+`build_index`为用户手动控制生成索引的函数，强制程序立即生成全部的索引信息。生成成功时退回真值，失败时退回假值。**用户有义务检查函数的退回值，程序负责保证退回假值时`System`对象的状态不发生改变**。
+
+`get_*_index`为用户获取索引的函数，为节省资源，函数退回常量引用。程序负责判断索引是否已经生成，如未生成则先生成索引，生成一次后再次获取无需再次生成。生成失败则抛出`std::runtime_error`异常，**用户有义务编写异常处理相关的代码，程序负责保证抛出异常时`System`对象的状态不发生改变**。
+
+    bool build_information();
+
+用户手动控制生成索引和动画仿真所有信息的函数，目前原则上不会退回假值，即可以确保成功调用。
+
+#### 输入输出
+
+    std::istream &operator>>(std::istream &is, System &s);
+    std::ostream &operator<<(std::ostream &os, System &s);
+
+待续……

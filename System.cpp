@@ -137,7 +137,7 @@ size_t System::get_phase(size_t no, Subsystem &particles)
   return particles[no].phase;
 }
 
-const vector<vector<size_t>> &System::get_hard_index()
+const Index &System::get_hard_index()
 {
   if(!hard_index_built &&
       !(hard_index_built = build_index(hard_index, hard)))
@@ -146,7 +146,7 @@ const vector<vector<size_t>> &System::get_hard_index()
   return hard_index;
 }
 
-const vector<vector<size_t>> &System::get_complete_index()
+const Index &System::get_complete_index()
 {
   if(!complete_index_built &&
       !(complete_index_built = build_index(complete_index, complete)))
