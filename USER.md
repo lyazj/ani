@@ -17,7 +17,7 @@
     (implicitly declared copy/move assignment operator)
     (implicitly declared destructor)
 
-同`std::array`，使用聚合类(`aggregate`)隐式定义的拷贝控制成员，需要注意默认初始化问题。
+同`std::array`，使用[聚合类(`aggregate`)隐式定义的拷贝控制成员](https://doc.codingdict.com/cpp_ref/reference/en/cpp/language/aggregate_initialization.html)，需要注意默认初始化可能带来随机初始值问题。
 
 在`C++11`及以后标准下支持列表初始化。
 
