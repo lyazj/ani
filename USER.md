@@ -7,8 +7,8 @@
   * [`Particle_Printer`类](#Particle_Printer类)
   * [`System`类](#System类)
 * [接口函数定义](#接口函数定义)
-  * [`C++`接口函数](#C++接口函数)
-  * [`C`接口函数（兼容`python`）](#C接口函数（兼容python）)
+  * [`C++`接口函数](#C接口函数)
+  * [`C`接口函数（兼容`python`）](#C接口函数兼容python)
 
 ## 类定义
 
