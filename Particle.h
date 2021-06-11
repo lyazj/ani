@@ -55,9 +55,10 @@ public:
     print_header();
     return *this;
   }
-  std::ostream &operator<<(const decltype(endp) &)
+  Particle_Printer &operator<<(const decltype(endp) &)
   {
-    return os << std::endl;
+    os << std::endl;
+    return *this;
   }
 private:
   std::ostream &os;

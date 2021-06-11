@@ -288,7 +288,7 @@
     constexpr struct { } hdrp = { };
     constexpr struct { } endp = { };
 
-与`std::endl`类似，使用`<<`作用`Particle_Printer`对象和`endp`，将向`Particle_Printer`对象绑定的输出流中发送一个`endl`控制符并退回该输出流的引用。
+与`std::endl`类似，使用`<<`作用`Particle_Printer`对象和`endp`，将向`Particle_Printer`对象绑定的输出流中发送一个`endl`控制符并退回被作用`Particle_Printer`对象的引用。
 
 同样地，控制变量`hdrp`对`Particle_Printer`对象的作用定义为向输出流中写入粒子列表的头信息，退回`Particle_Printer`对象的引用以待用户继续写入粒子信息（不会自动换行）。
 
@@ -307,7 +307,7 @@
 #### 输出操作
 
     Particle_Printer &operator<<(const decltype(hdrp) &);
-    std::ostream &operator<<(const decltype(endp) &);
+    Particle_Printer &operator<<(const decltype(endp) &);
 
 其行为见[特殊控制变量](#特殊控制变量)部分说明。
 
