@@ -40,8 +40,8 @@ struct Particle : public Particle_Base {
 std::istream &operator>>(std::istream &is, Particle_Base &pb);
 std::istream &operator>>(std::istream &is, Particle &p);
 
-struct { } hdrp;
-struct { } endp;
+constexpr struct { } hdrp = { };
+constexpr struct { } endp = { };
 
 class Particle_Printer {
 public:

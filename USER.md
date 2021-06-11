@@ -12,7 +12,7 @@
 
     template<class T, size_t n> struct Vector;
 
-#### 初始化和拷贝控制成员
+#### 初始化和拷贝控制
 
     (implicitly declared default/copy/move constructor)
     (implicitly declared copy/move assignment operator)
@@ -101,13 +101,15 @@
 
 粒子的基类，定义在头文件`Particle.h`中。用于支持直接从输入流中读取`pythia8`的日志信息。每个`Particle_Base`类完整而原始地包含了`pythia8`日志提供的一个粒子的信息。
 
-#### 拷贝控制
+#### 初始化和拷贝控制
 
     (implicitly declared default/copy/move constructor)
     (implicitly declared copy/move assignment operator)
     virtual ~Particle_Base() { }
 
-除留空的虚析构函数外，使用编译器合成的拷贝控制成员。
+除留空的虚析构函数外（后续可能支持多态特性），使用编译器合成的拷贝控制成员。
+
+一般来说，用户不需要直接构造和使用`Particle_Base`类，即使构造也一般不应提供初始值，而是使用程序为`Particle_Base`类定义的输入算符函数为对象赋值。
 
 #### 数据成员
 
@@ -151,7 +153,7 @@
 
 粒子的静质量信息。其单位一般为GeV/c^2。
 
-#### 成员函数
+#### 函数成员 
 
     Vector<double, 3> getv() const { return p / e; }
 
@@ -194,6 +196,14 @@
 
 注意`(size_t) 0`为`size_t`类型元素的最小值，`(size_t)-1`为`size_t`类型元素的最大值，这对后面我们的运算规则十分重要。
 
+#### 初始化和拷贝控制
+
+    (implicitly declared default/copy/move constructor)
+    (implicitly declared copy/move assignment operator)
+    (implicitly declared virtual destructor)
+
+没有显式定义的拷贝控制成员。用户一般也不需要使用包含数据成员初始值的初始化器初始化`Particle`对象，同样我们为`Particle`类定义了输入算符函数。
+
 #### 数据成员
 
     std::set<size_t> mothers;
@@ -234,3 +244,54 @@
     std::istream &operator>>(std::istream &, Particle &);
 
 派生类`Particle`的输入函数首先调用基类`Particle_Base`的输入函数读入信息，检查流状态有效后根据上面的规则为其所有成员赋值。同样地，**当用户接收到无效状态的输入流退回时，应当放弃使用被作用对象中被赋予的无意义的值**。
+
+下面我们将定义`Particle`类的输出操作。
+
+### `Particle_Printer`类
+
+用于向输出流打印`Particle`对象中的信息，定义在头文件`Particle.h`中，部分成员函数实现于`Particle.cpp`中。
+
+#### 初始化和拷贝控制
+
+    Particle_Printer(std::ostream &,
+        size_t no_width, size_t name_width, size_t e_width, size_t phase_width);
+    (implicitly deleted default constructor)
+    (implicitly declared copy/move constructor)
+    (implicitly declared copy/move assignment operator)
+    (implicitly declared destructor)
+
+`Particle_Printer`类的直接构造函数的第一个形参为待绑定输出流的引用。为了将输出数据对齐，我们还需要向`Particle_Printer`类的直接构造函数传入`4`个代表宽度的`size_t`实参，它们的值将被该构造函数赋给被构造对象的同名成员。
+
+#### 数据成员
+
+无公有数据成员。
+
+#### 特殊控制变量
+
+    constexpr struct { } hdrp = { };
+    constexpr struct { } endp = { };
+
+与`std::endl`类似，使用`<<`作用`Particle_Printer`对象和`endp`，将向`Particle_Printer`对象绑定的输出流中发送一个`endl`控制符并退回该输出流的引用。
+
+同样地，控制变量`hdrp`对`Particle_Printer`对象的作用定义为向输出流中写入粒子列表的头信息并换行，退回`Particle_Printer`对象的引用以待用户继续写入粒子信息。
+
+使用示例：
+
+    using std::endl;
+    extern Particle p;
+    extern Particle_Printer pout;
+    pout << hdrp << endp;
+    pout << p << endp << "Wow!~~" << endl;
+
+这两个控制变量为（两个不同的）匿名字面值常量类(`constexpr`)的成员，且被定义为字面值常量(`constexpr`)。这样的定义有望避免链接错误。
+
+#### 输出操作
+
+    Particle_Printer &operator<<(const decltype(hdrp) &);
+    std::ostream &operator<<(const decltype(endp) &);
+
+其行为见[特殊控制变量](#特殊控制变量)部分说明。
+
+    Particle_Printer &operator<<(const Particle &p);
+
+向绑定的输出流中打印粒子信息。详见具体输出。
