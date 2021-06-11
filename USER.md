@@ -294,11 +294,13 @@
 
 使用示例：
 
+    using std::cout;
     using std::endl;
     extern Particle p;
-    extern Particle_Printer pout;
-    pout << hdrp << endp;
-    pout << p << endp << "Wow!~~" << endl;
+    extern Particle_Printer pout;  // pout bound with cout
+    pout << hdrp << endp;          // write the head line
+    pout << p << endp;             // write information about the particle
+    cout << "Wow!~~" << endl;      // write additional words followed
 
 这两个控制变量为（两个不同的）匿名字面值常量类(`constexpr`)的成员，且被定义为字面值常量(`constexpr`)。这样的定义有望避免链接错误。
 
