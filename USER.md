@@ -1,10 +1,20 @@
 # 用户文档
 
+* [类定义](#类定义)
+  * [`Vector`模板类](#`Vector`模板类)
+  * [`Particle_Base`类](#`Particle_Base`类)
+  * [`Particle`类](#`Particle`类)
+  * [`Particle_Printer`类](#`Particle_Printer`类)
+  * [`System`类](#`System`类)
+* [接口函数定义](#接口函数定义)
+  * [`C++`接口函数](#`C++`接口函数)
+  * [`C`接口函数（兼容`python`）](#`C`接口函数（兼容`python`）)
+
 ## 类定义
 
 ### `Vector`模板类
 
-非常简化的向量模板类。这里的向量，指的是数学和物理上的向量，即一维张量。其功能类似`numpy`中的`array`，但目前仅提供线性运算支持。与`std::vector`本质上不同，数据结构、初始化和拷贝控制方式类似`std::array`。
+非常简化的向量模板类。这里的向量，指的是数学和物理上的向量，即一维张量。其功能类似`numpy`中的`array`，但目前仅提供线性运算支持。与`std::vector`本质上不同，模板定义、数据结构、初始化和拷贝控制方式类似`std::array`。
 
 `Vector`模板类定义在头文件`Vector.h`中。
 
@@ -109,7 +119,7 @@
 
 除留空的虚析构函数外（后续可能支持多态特性），使用编译器合成的拷贝控制成员。
 
-一般来说，用户不需要直接构造和使用`Particle_Base`类，即使构造也一般不应提供初始值，而是使用程序为`Particle_Base`类定义的输入算符函数为对象赋值。
+一般来说，用户不需要直接构造和使用`Particle_Base`类，即使构造也一般不应提供初始值，而是使用程序为`Particle_Base`类定义的输入算符为对象赋值。
 
 #### 数据成员
 
@@ -161,19 +171,19 @@
 
 根据狭义相对论关系有：
 
-<img src="https://latex.codecogs.com/gif.latex?\vec%20p%20=%20\frac{m\vec%20v}{\sqrt{1%20-%20(v%20/%20c)^2}},\%20E%20=%20\frac{mc^2}{\sqrt{1%20-%20(v%20/%20c)^2}}"/>
+<img src="https://latex.codecogs.com/gif.latex?\vec{p}=\frac{m\vec{v}}{\sqrt{1-(v/c)^2}},\%20E=\frac{mc^2}{\sqrt{1-(v/c)^2}}"/>
 
 则：
 
-<img src="https://latex.codecogs.com/gif.latex?\vec%20v%20/%20c%20=%20\frac{\vec%20p%20/%20({\rm%20GeV}/c)}{E%20/%20{\rm%20GeV}}"/>
+<img src="https://latex.codecogs.com/gif.latex?\vec{v}/c=\frac{\vec{p}/({\rm%20GeV}/c)}{E/{\rm%20GeV}}"/>
 
-可见在高能物理常用的单位制下使用动量除以能量计算粒子速度是比较合适的。
+可见在高能物理常用的单位制下使用动量除以能量计算粒子速度是比较合理的。
 
 #### 输入输出
 
     std::istream &operator>>(std::istream &, Particle_Base &);
 
-输入操作符函数从指定的`pythia8`日志流中顺序读取粒子信息，用户需要确保输入信息和顺序与程序定义匹配。一般而言，每次输入操作应对应`pythia8`日志文件粒子信息的一行，这一行必须包含完整有效的一个粒子的信息，不能是标题行、总计行或是其他无关内容。该行应以一个粒子的`no`开头，同一个粒子的`m`结束，以至少一个空白字符分隔，共包含 `15`段连续的信息。例如：
+输入操作符函数从指定的`pythia8`日志流中顺序读取粒子信息，用户需要确保输入信息和顺序与程序定义匹配。一般而言，每次输入操作应对应`pythia8`日志文件中粒子信息的一行，这一行必须包含完整有效的一个粒子的信息，不能是标题行、总计行或是其他无关内容。该行应以一个粒子的`no`开头，同一个粒子的`m`结束，以至少一个空白字符分隔，共包含 `15`段连续的信息。例如：
 
     0 90 (system) -11 0 0 0 0 0 0 0.000 0.000 0.000 13000.000 13000.000
 
@@ -181,7 +191,7 @@
 
 ### `Particle`类
 
-粒子类，`Particle_Base`的子类。用于对`pythia8`日志中提供的粒子信息进行初步加工。该类定义在头文件`Particle.h`中，部分成员函数实现于`Particle.cpp`中。
+粒子类，`Particle_Base`的派生类，用于存储程序根据`Particle_Base`基类中提供的信息进行计算仿真所获得的结果。该类定义在头文件`Particle.h`中，部分成员函数实现于`Particle.cpp`中。
 
 #### 定义
 
@@ -194,7 +204,7 @@
     #define PHASE_UNDEF ((size_t)-1)
     #define PHASE_MIN   ((size_t) 0)
 
-注意`(size_t) 0`为`size_t`类型元素的最小值，`(size_t)-1`为`size_t`类型元素的最大值，这对后面我们的运算规则十分重要。
+注意`(size_t) 0`为`size_t`类型元素的最小值，`(size_t)-1`为`size_t`类型元素的最大值，这对一些函数的代码实现很有帮助。
 
 #### 初始化和拷贝控制
 
@@ -206,12 +216,14 @@
 
 #### 数据成员
 
+所有的数据成员都是公有的。
+
     std::set<size_t> mothers;
     std::set<size_t> daughters;
 
-粒子的母亲和女儿们。程序使用`>>`算符读入`Particle`类时将根据基类`Particle_Base`中同名元素的值为`mothers`和`daughters`赋值，后者可能与前者显著不同。注意到，二者被声明为不同的类型，这是因为每个粒子真实的母亲和女儿数量都不尽相同，而我们定义的`Particle::mothers`和`Particle::daughters`需要反映真实的情况，这有别于`Particle_Base`中同名元素的结果。因为后者来自`pythia8`的日志文件，在日志文件中每个粒子的`mothers`和`daughters`有且仅有两列，其信息分开来看都是不完整的。
+粒子的母亲和女儿们。程序使用`>>`算符读入`Particle`类时将根据基类`Particle_Base`中同名元素的值为`mothers`和`daughters`赋值，后者可能与前者显著不同。注意到，基类和派生类中它们被声明为不同的类型，这是因为每个粒子真实的母亲和女儿数量都不尽相同，而我们希望派生类中的成员反映真实的情况，这有别于`Particle_Base`中同名元素的结果（它们来自`pythia8`的日志文件，在日志文件中每个粒子的`mothers`和`daughters`有且仅有两列，其信息分开来看都是不完整的，且可能具有`0`占位填充）。
 
-后文将提到程序使用`System`类控制程序所有的行为，其中定义了类型成员`System::Subsystem`，为`std::vector<Particle>`的类型别名。程序对每个`Subsystem`实例中的`Particle`有以下要求：
+后文将提到用户可以使用`System`类控制程序所有的行为，其中定义了类型成员`System::Subsystem`，为`std::vector<Particle>`的类型别名。程序对每个`Subsystem`实例中的`Particle`有以下要求：
 
 1. 任何一对母女关系都同时存在于母粒子的`Particle::daughters`和女粒子的`Particle::mothers`中
 2. `Particle::daughters`中不含有`0`
@@ -221,7 +233,7 @@
 
 根据以上规则可以唯一地由`Particle_Base`中的`mothers`和`daughters`得到`Particle`中的同名元素。
 
-我们约定规则2、3、4、5由`Particle`类的`>>`算符保证，而规则1由`System`类的行为保证。则经`System`类处理之前，每个`Particle`实例中的`mothers`和`daughters`信息都可能是不完整的。
+我们约定规则2、3、4、5由`Particle`类的`>>`算符保证，而规则1由`System`类的行为保证。则经`System`类处理之前，每个`Particle`实例中的`mothers`和`daughters`信息也可能是不完整的。
 
     Vector<double, 3> r;
 
@@ -253,18 +265,23 @@
 
 #### 初始化和拷贝控制
 
-    Particle_Printer(std::ostream &,
+    Particle_Printer(std::ostream &os,
         size_t no_width, size_t name_width, size_t e_width, size_t phase_width);
     (implicitly deleted default constructor)
     (implicitly declared copy/move constructor)
-    (implicitly declared copy/move assignment operator)
+    (implicitly deleted copy/move assignment operator)
     (implicitly declared destructor)
 
-`Particle_Printer`类的直接构造函数的第一个形参为待绑定输出流的引用。为了将输出数据对齐，我们还需要向`Particle_Printer`类的直接构造函数传入`4`个代表宽度的`size_t`实参，它们的值将被该构造函数赋给被构造对象的同名成员。
+`Particle_Printer`类的直接构造函数的第一个形参为待绑定输出流的引用，该引用将绑定到`Particle_Printer`对象的同名私有成员上。为了将输出数据对齐，我们还需要向`Particle_Printer`类的直接构造函数传入`4`个代表宽度的`size_t`实参，它们的值将被该构造函数赋给被构造对象的同名私有成员。
+
+与`C++`标准库中的输出流一样，`Particle_Printer`类不可进行拷贝/移动赋值，稍有区别的是，`Particle_Printer`类允许拷贝/移动构造对象，这是因为我们拷贝对象时并没有拷贝输出流，而是使新对象的输出流引用与被拷贝对象的输出流引用绑定到了相同的地址上。不太准确地说，就是拷贝了“流引用”。
 
 #### 数据成员
 
-无公有数据成员。
+    std::ostream &os;
+    size_t no_width, name_width, e_width, phase_width;
+
+均为私有成员，其值或绑定地址在对象创建时确定，之后不可更改。
 
 #### 特殊控制变量
 
@@ -273,7 +290,7 @@
 
 与`std::endl`类似，使用`<<`作用`Particle_Printer`对象和`endp`，将向`Particle_Printer`对象绑定的输出流中发送一个`endl`控制符并退回该输出流的引用。
 
-同样地，控制变量`hdrp`对`Particle_Printer`对象的作用定义为向输出流中写入粒子列表的头信息并换行，退回`Particle_Printer`对象的引用以待用户继续写入粒子信息。
+同样地，控制变量`hdrp`对`Particle_Printer`对象的作用定义为向输出流中写入粒子列表的头信息，退回`Particle_Printer`对象的引用以待用户继续写入粒子信息（不会自动换行）。
 
 使用示例：
 
@@ -285,6 +302,8 @@
 
 这两个控制变量为（两个不同的）匿名字面值常量类(`constexpr`)的成员，且被定义为字面值常量(`constexpr`)。这样的定义有望避免链接错误。
 
+目前程序没有引入新的命名空间，上述两个特殊变量定义在全局作用域中。
+
 #### 输出操作
 
     Particle_Printer &operator<<(const decltype(hdrp) &);
@@ -294,13 +313,15 @@
 
     Particle_Printer &operator<<(const Particle &);
 
-向绑定的输出流中打印粒子信息。详见具体输出。
+向绑定的输出流中打印粒子信息。
+
+目前程序以两个空格为分隔，依次打印粒子的编号、名称、`x, y, z`三个方向的位置和速度、粒子的能量、静质量、死亡时段数，共`11`段连续的信息。这些信息对动画的制作是基本而关键的。
 
 ### `System`类
 
 控制系统类，用于控制程序面向用户的主要功能。`System`类定义在头文件`System.h`中，大多数功能实现于源文件`System.cpp`中。
 
-#### 类型成员
+#### 类型成员（公有）
 
     typedef std::vector<Particle> Subsystem;
 
@@ -318,7 +339,7 @@
 
 `System`类无显式定义的拷贝控制成员，但为部分数据成员提供了类内初始值，它们对`System`对象的状态是十分重要的。用户对`System`对象的操作主要通过成员函数和输入输出运算完成。
 
-#### 数据成员
+#### 公有数据成员
 
     std::string description;
 
@@ -333,7 +354,7 @@
 
 指定在最大时段数的粒子处理完毕后需要延长的时段数，默认为0，用户可以直接修改。
 
-#### 函数成员
+#### 公有函数成员
 
     bool build_index();
     const Index &get_hard_index();
@@ -354,4 +375,47 @@
     std::istream &operator>>(std::istream &is, System &s);
     std::ostream &operator<<(std::ostream &os, System &s);
 
-待续……
+`System`类最重要的两个函数。
+
+对`System`对象进行输入操作时，用户需要确保程序可以从输入流中读取完整的`pythia8`日志信息，且没有其它无关的信息。程序确保输入操作符函数退回时所需信息（目前为`pythia8`日志中的介绍部分、硬散射过程的粒子信息、完整过程的粒子信息）全部收集完毕，但不会一直向流中读取数据直到输入流处于无效状态。并且，函数退回前会对每个`Subsystem`中的信息进行加工，确保满足`Particle`类数据成员说明中列出的5条约定。
+
+对`System`对象进行输出操作时，程序会自动调用`build_*`函数进行自我处理，该过程可能抛出异常。程序经过建立索引（时段划分）、计算粒子生命周期和每个时段开始时的位置和速度等过程后，将运算结果写入输出流中。每次`System`对象的输出操作将获得四段信息，分别为硬过程每时段新增粒子的信息、硬过程每时段所有存在的粒子的信息，以及软过程相应的两块信息。每串信息首尾都有长串星花（`*`）包围的说明信息分隔，方便用户进行切割处理。
+
+## 接口函数定义
+
+接口函数在头文件`Interface.h`中声明，在源文件`Interface.cpp`中定义。
+
+简单地说，动画仿真的完整接口除去错误检查外只需要两步操作：
+
+1. 创建`System`对象
+2. 进行`System`对象的输入和输出运算
+
+### `C++`接口函数
+
+    int simulate(std::istream &is, std::ostream &os, int prolong = 0);
+    int simulate(const std::string &infile, const std::string &outfile, int prolong = 0);
+
+用户需要传入3个参数。首先，用户需要使用前两个参数指定程序的输入输出源，它们可以是`C++`输入输出流，也可以是文件名称。紧接着用户需要使用第三个参数（可选，默认为0）指定所有的时段处理完后需要延长的时段。在延长的时段中，所有存在的粒子都做匀速直线运动。当传入的`prolong`为负值时，它被程序处理为`0`。
+
+需要注意的是，程序不检查输出流的状态，当输出流处于无效状态（这也可能由用户指定没有写权限的文件造成）时，用户无法获得程序的任何正常输出。
+
+头文件`Interface.h`使用了条件编译技术，当使用`C`编译器编译且宏`__cplusplus`未定义时`C++`接口函数不可见。
+
+### `C`接口函数（兼容`python`）
+
+    int simulate(const char *infile, const char *outfile);
+    int simulate_prolong(const char *infile, const char *outfile, int prolong);
+
+它们的功能与`C++`版本完全相同，只是函数名称和参数类型有所区别。这样的定义保证了程序的兼容性。
+
+在`python3`中，你可以这样调用：
+
+    import ctypes
+    simulate_prolong = ctypes.CDLL('libano.so').simulate_prolong
+    simulate_prolong(b'input.txt', b'output.txt', 15)
+
+其中`libano.so`包含`simulate_prolong`函数的二进制代码。它可以使用`Makefile`产生。
+
+请注意，我们需要使用字节串（`bytes`）而非字符串（`str`）作为传递给函数的第一和第二个参数。
+
+使用`C++`编译器编译时，只有声明为`extern "C"`的符号才对`CDLL`可见。故我们也使用了条件编译技术在`C++`环境下将`C`接口函数声明为`extern "C"`。
