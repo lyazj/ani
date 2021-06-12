@@ -23,6 +23,8 @@ import imageio
 import os
 import multiprocessing as mp
 import platform
+import particle
+import enum
 
 infile = 'input.txt'
 outfile = 'output.txt'
@@ -39,14 +41,67 @@ mbits = platform.architecture()[0][:2]
 class Particle:
   def __init__(self, args):
     self.no = args[0]
-    self.name = args[1]
-    self.r = np.array(list(map(float, args[2:5])))
-    self.v = np.array(list(map(float, args[5:8])))
-    self.e = args[8]
-    self.m = args[9]
-    self.death = args[10]
+    self.id = int(args[1])
+    self.name = args[2]
+    self.r = np.array(list(map(float, args[3:6])))
+    self.v = np.array(list(map(float, args[6:9])))
+    self.e = args[9]
+    self.m = args[10]
+    self.death = args[11]
+    self._get_attrib()
   def __repr__(self):
     return f'<{self.no}>{self.name}@{self.r}'
+
+  class Attrib(enum.IntEnum):
+    Other  = -1
+    Quark  =  0
+    Lepton =  1
+    Gluon  =  2
+    Gamma  =  3
+    ZW     =  4
+    Higgs  =  5
+    Meson  =  6
+    Baryon =  7
+
+  _attrib_name = {
+    Attrib.Other  : 'Other' ,
+    Attrib.Quark  : 'Quark' ,
+    Attrib.Lepton : 'Lepton',
+    Attrib.Gluon  : 'Gluon' ,
+    Attrib.Gamma  : 'Gamma' ,
+    Attrib.ZW     : 'ZW'    ,
+    Attrib.Higgs  : 'Higgs' ,
+    Attrib.Meson  : 'Meson' ,
+    Attrib.Baryon : 'Baryon',
+  }
+
+  @property
+  def attrib_name(self):
+    return Particle._attrib_name[self.attrib]
+
+  def _get_attrib(self):
+    id = abs(self.id)
+    if 1 <= id <= 8: self.attrib = Particle.Attrib.Quark
+    elif 11 <= id <= 18: self.attrib = Particle.Attrib.Lepton
+    elif id == 21: self.attrib = Particle.Attrib.Gluon
+    elif id == 22: self.attrib = Particle.Attrib.Gamma
+    elif id in {23,24,25,32,33,34,35,36}: self.attrib = Particle.Attrib.ZW
+    elif id == 37: self.attrib = Particle.Attrib.Higgs
+    else:
+      _id = particle.PythiaID(id).to_pdgid()
+      if(particle.pdgid.is_meson(_id)): self.attrib = Particle.Attrib.Meson
+      elif(particle.pdgid.is_baryon(_id)): self.attrib = Particle.Attrib.Baryon
+      else: self.attrib = Particle.Attrib.Other
+
+  _plot_colors = 'bgrcmykk'
+
+  def get_plot_format(self):
+    _fmt = Particle._plot_colors[int(self.attrib)]
+    if self.attrib == Particle.Attrib.Meson: _fmt += 's'
+    elif self.attrib == Particle.Attrib.Baryon: _fmt += '^'
+    elif self.attrib == Particle.Attrib.Other: _fmt += '*'
+    else: _fmt += 'o'
+    return _fmt
 
 particles = []
 
@@ -79,9 +134,15 @@ if not simulate(infile.encode(), outfile.encode(), prolong):
       ax.set_ylim([-25, 25])
       ax.set_zlim([-25, 25])
       print('Plotting phase:', ph)
+
+      _have_legend = set()
       for p in particles[ph]:
-        # print('Plotting particle:', p)
-        ax.plot(*p.r, 'o')
+        dot = ax.plot(*p.r, p.get_plot_format())
+        if p.attrib not in _have_legend:
+           dot[0].set_label(p.attrib_name)
+           _have_legend.add(p.attrib)
+      ax.legend()
+
       print(f'Saving image: phase_{ph}.png... ', end = '', flush = True)
       plt.savefig(f'phase_{ph}.png')
       plt.cla()

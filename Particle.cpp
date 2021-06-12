@@ -65,6 +65,8 @@ Particle_Printer &Particle_Printer::operator<<(const Particle &p)
   os << right;
   os << setw(no_width) << p.no << "  ";
   os << left;
+  os << setw(id_width) << p.id << "  ";
+  os << right;
   os << setw(name_width) << p.name << "  ";
   os << right;
   os << setw(e_width) << p.r[0] << "  ";
@@ -85,6 +87,8 @@ void Particle_Printer::print_header()
   os << right;
   os << setw(no_width) << "no" << "  ";
   os << left;
+  os << setw(id_width) << "id" << "  ";
+  os << right;
   os << setw(name_width) << "name" << "  ";
   os << right;
   os << setw(e_width) << "x" << "  ";

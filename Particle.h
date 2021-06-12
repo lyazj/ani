@@ -61,9 +61,9 @@ constexpr struct { } endp = { };
 
 class Particle_Printer {
 public:
-  Particle_Printer(std::ostream &s, size_t no,
+  Particle_Printer(std::ostream &s, size_t no, size_t id,
       size_t name, size_t e, size_t ph)
-    : os(s), no_width(no),
+    : os(s), no_width(no), id_width(id),
       name_width(name), e_width(e), phase_width(ph) { }
   Particle_Printer &operator<<(const Particle &p);
   Particle_Printer &operator<<(const decltype(hdrp) &)
@@ -78,6 +78,6 @@ public:
   }
 private:
   std::ostream &os;
-  size_t no_width, name_width, e_width, phase_width;
+  size_t no_width, id_width, name_width, e_width, phase_width;
   void print_header();
 };

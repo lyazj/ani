@@ -265,21 +265,21 @@
 
 #### 初始化和拷贝控制
 
-    Particle_Printer(std::ostream &os,
-        size_t no_width, size_t name_width, size_t e_width, size_t phase_width);
+    Particle_Printer(std::ostream &os, size_t no_width, size_t id_width,
+        size_t name_width, size_t e_width, size_t phase_width);
     (implicitly deleted default constructor)
     (implicitly declared copy/move constructor)
     (implicitly deleted copy/move assignment operator)
     (implicitly declared destructor)
 
-`Particle_Printer`类的直接构造函数的第一个形参为待绑定输出流的引用，该引用将绑定到`Particle_Printer`对象的同名私有成员上。为了将输出数据对齐，我们还需要向`Particle_Printer`类的直接构造函数传入`4`个代表宽度的`size_t`实参，它们的值将被该构造函数赋给被构造对象的同名私有成员。
+`Particle_Printer`类的直接构造函数的第一个形参为待绑定输出流的引用，该引用将绑定到`Particle_Printer`对象的同名私有成员上。为了将输出数据对齐，我们还需要向`Particle_Printer`类的直接构造函数传入`5`个代表宽度的`size_t`实参，它们的值将被该构造函数赋给被构造对象的同名私有成员。
 
 与`C++`标准库中的输出流一样，`Particle_Printer`类不可进行拷贝/移动赋值，稍有区别的是，`Particle_Printer`类允许拷贝/移动构造对象，这是因为我们拷贝对象时并没有拷贝输出流，而是使新对象的输出流引用与被拷贝对象的输出流引用绑定到了相同的地址上。不太准确地说，就是拷贝了“流引用”。
 
 #### 数据成员
 
     std::ostream &os;
-    size_t no_width, name_width, e_width, phase_width;
+    size_t no_width, id_width, name_width, e_width, phase_width;
 
 均为私有成员，其值或绑定地址在对象创建时确定，之后不可更改。
 
@@ -317,7 +317,7 @@
 
 向绑定的输出流中打印粒子信息。
 
-目前程序以两个空格为分隔，依次打印粒子的编号、名称、`x, y, z`三个方向的位置和速度、粒子的能量、静质量、死亡时段数，共`11`段连续的信息。这些信息对动画的制作是基本而关键的。
+目前程序以两个空格为分隔，依次打印粒子的编号、身份码、名称、`x, y, z`三个方向的位置和速度、粒子的能量、静质量、死亡时段数，共`12`段连续的信息。这些信息对动画的制作是基本而关键的。
 
 ### `System`类
 

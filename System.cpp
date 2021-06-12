@@ -178,9 +178,9 @@ bool System::build_information()
       build_information(get_hard_index(), hard);
       build_information(get_complete_index(), complete);
       e_width = to_string((int64_t)complete[0].e).size() + 5;
-      phase_width = max(
-          to_string(complete_index.size()).size() + 1, (size_t)5);
+      phase_width = to_string(complete_index.size()).size() + 1;
       no_width = to_string(complete.size()).size() + phase_width + 1;
+      phase_width = max(phase_width, (size_t)5);
     } catch(const runtime_error &err) {
       cerr << err.what() << endl;
       return false;
@@ -206,6 +206,7 @@ void System::build_information(const Index &index, Subsystem &particles)
       if(e)
         particles[i].r /= e;
       name_width = max(name_width, particles[i].name.size());
+      id_width = max(id_width, to_string(particles[i].id).size());
     }
   }
 }
@@ -213,7 +214,8 @@ void System::build_information(const Index &index, Subsystem &particles)
 ostream &System::
 print(ostream &os, const Index &index, const Subsystem &particles) const
 {
-  Particle_Printer printer(os, no_width, name_width, e_width, phase_width);
+  Particle_Printer printer(
+      os, no_width, id_width, name_width, e_width, phase_width);
   for(size_t p = 0; p < index.size(); ++p)
   {
     os << "[" << p << "]" << endl;
@@ -228,7 +230,8 @@ print(ostream &os, const Index &index, const Subsystem &particles) const
 ostream &System::
 print_all(ostream &os, const Index &index, Subsystem particles) const
 {
-  Particle_Printer printer(os, no_width, name_width, e_width, phase_width);
+  Particle_Printer printer(
+      os, no_width, id_width, name_width, e_width, phase_width);
   for(size_t p = 0; p < index.size(); ++p)
   {
     os << "[" << p << "]" << endl;

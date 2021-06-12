@@ -50,6 +50,7 @@ private:
   Index hard_index;
   Index complete_index;
   size_t no_width = 0;
+  size_t id_width = 0;
   size_t name_width = 0;
   size_t e_width = 0;
   size_t phase_width = 0;
