@@ -267,7 +267,8 @@ print_all(ostream &os, const Index &index, Subsystem particles) const
 
 ostream &operator<<(ostream &os, System &_s)
 {
-  _s.build_information();
+  if(!_s.build_information())
+    return os;
   System s(_s);
   os << fixed << setprecision(3);
   os << "********** hard process (new) **********\n" << endl;
@@ -282,5 +283,7 @@ ostream &operator<<(ostream &os, System &_s)
   os << "********** complete process (all) **********\n" << endl;
   s.print_all(os, s.complete_index, s.complete);
   os << "********** end of listing **********\n" << endl;
+  if(!os)
+    cerr << "ERROR: Error writing output." << endl;
   return os << defaultfloat;
 }
