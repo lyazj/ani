@@ -58,7 +58,7 @@ private:
   bool information_built = false;
 
   static bool build_index(Index &, Subsystem &);
-  bool build_information(const Index &, Subsystem &);
+  void build_information(const Index &, Subsystem &);
   bool preprocess();
   static bool preprocess(Subsystem &);
   static size_t get_phase(size_t no, Subsystem &);

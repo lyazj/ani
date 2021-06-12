@@ -173,17 +173,22 @@ const System::Index &System::get_complete_index()
 
 bool System::build_information()
 {
-  if(!information_built && !(information_built =
-        build_information(get_hard_index(), hard) &&
-        build_information(get_complete_index(), complete)))
-    return false;
-  e_width = to_string((int64_t)complete[0].e).size() + 5;
-  phase_width = max(to_string(complete_index.size()).size() + 1, (size_t)5);
-  no_width = to_string(complete.size()).size() + phase_width + 1;
+  if(!information_built)
+    try {
+      build_information(get_hard_index(), hard);
+      build_information(get_complete_index(), complete);
+      e_width = to_string((int64_t)complete[0].e).size() + 5;
+      phase_width = max(
+          to_string(complete_index.size()).size() + 1, (size_t)5);
+      no_width = to_string(complete.size()).size() + phase_width + 1;
+    } catch(const runtime_error &err) {
+      cerr << err.what() << endl;
+      return false;
+    }
   return true;
 }
 
-bool System::build_information(const Index &index, Subsystem &particles)
+void System::build_information(const Index &index, Subsystem &particles)
 {
   for(size_t p = 0; p < index.size(); ++p)
   {
@@ -203,7 +208,6 @@ bool System::build_information(const Index &index, Subsystem &particles)
       name_width = max(name_width, particles[i].name.size());
     }
   }
-  return true;
 }
 
 ostream &System::
