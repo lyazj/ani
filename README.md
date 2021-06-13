@@ -6,7 +6,7 @@
 
 ## 外部依赖
 
-python3 (with numpy, matplotlib, imageio), a C++ Compiler (e.g. g++)
+python3 (with numpy, matplotlib, imageio, particle), a C++ Compiler (e.g. g++)
 
 ### on Windows
 mingw32-make (TDM-GCC recommended, especially for 32-bit python.exe on 64-bit Win-Platform)
