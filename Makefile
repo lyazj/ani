@@ -62,8 +62,6 @@ $(dep_prefix)/%.d : $(src_prefix)/%.cpp $(pres)
 	@>$@ echo "$(subst  \ ,,$(patsubst %.o:,$(obj_prefix)/%.o:, \
 		$(shell $(CXX) $(CXXFLAGS) $< -MM)))"
 
-$(obj_prefix)/%.o : %.o
-
 $(pres) :
 	mkdir -p $@
 
