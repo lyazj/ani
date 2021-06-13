@@ -22,25 +22,25 @@
 
 2. 安装外部依赖并确保软件目录下所有依赖的可访问性。以Ubuntu为例：
 
-  * 安装python第三方库：
+   * 安装python第三方库：
 
-        $ sudo apt-get install python3-pip
-        $ pip install numpy matplotlib imageio particle
+         $ sudo apt-get install python3-pip
+         $ pip install numpy matplotlib imageio particle
 
-  * 安装C++编译器和make：（以g++为例）
+   * 安装C++编译器和make：（以g++为例）
 
-        $ sudo apt install g++ make
+         $ sudo apt install g++ make
 
-  * 检查是否安装成功：
+   * 检查是否安装成功：
 
-        $ python3
-        >>> import numpy
-        >>> import matplotlib
-        >>> import imageio
-        >>> import particle
-        >>> exit()  # or just press Ctrl-D **once**
-        $ g++ --version
-        $ make --version
+         $ python3
+         >>> import numpy
+         >>> import matplotlib
+         >>> import imageio
+         >>> import particle
+         >>> exit()  # or just press Ctrl-D **once**
+         $ g++ --version
+         $ make --version
 
     成功的标志为执行第一条指令可进入python3（观察到有版本和版权等信息输出，提示符变为三个大于号），进行各import操作不报错，退回shell执行最后两条指令看到版本信息输出。
 
