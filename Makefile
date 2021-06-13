@@ -15,13 +15,29 @@
 #   You should have received a copy of the GNU General Public License
 #   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-CXXFLAGS = -O2 -Wall -Wshadow -Wextra $(OUTER_CXXFLAGS)
-LDFLAGS = -L. -lano -Wl,-rpath=.
+inc_prefix = include
+src_prefix = src
+obj_prefix = tmp
+obj_names = Utility.o Particle.o System.o Interface.o
+lib_prefix = lib
+lib_names = libano.so
+bin_prefix = bin
+bin_names = Simulate
+dep_prefix = $(obj_prefix)
+dep_names = $(obj_names:%.o=%.d) $(bin_names:%=%.d)
 
-objs = Utility.o Particle.o System.o Interface.o
-libs = libano.so
-bins = Simulate
-deps = $(objs:%.o=%.d) $(bins:%=%.d)
+bin_to_lib_prefix = ../lib
+
+objs = $(obj_names:%=$(obj_prefix)/%)
+libs = $(lib_names:%=$(lib_prefix)/%)
+bins = $(bin_names:%=$(bin_prefix)/%)
+deps = $(dep_names:%=$(dep_prefix)/%)
+
+CXXFLAGS = -O2 -I$(inc_prefix) $(OUTER_CXXFLAGS)
+LDFLAGS = -L$(lib_prefix) -lano \
+					-Wl,-rpath=. \
+					-Wl,-rpath=$(lib_prefix) \
+					-Wl,-rpath=$(bin_to_lib_prefix)
 
 all : libs bins
 
@@ -30,19 +46,19 @@ libs : $(libs)
 bins : $(bins)
 
 clean :
-	$(RM) $(objs) $(bins:%=%.o) $(libs) $(bins) $(deps)
-	$(RM) output.txt phase_*.png concept.gif
+	$(RM) $(objs) $(libs) $(bins) $(deps)
 
-%.o : %.cpp
+$(obj_prefix)/%.o : $(src_prefix)/%.cpp
 	$(CXX) $(CXXFLAGS) $< -o $@ -c -fPIC
+	@$(RM) $(@:%.o=%.d)
 
-libano.so : $(objs)
+$(lib_prefix)/libano.so : $(objs)
 	$(CXX) $(CXXFLAGS) $^ -o $@ -shared -fPIC
 
-% : %.o $(libs)
+$(bin_prefix)/% : $(obj_prefix)/%.o $(libs)
 	$(CXX) $(CXXFLAGS) $< -o $@ $(LDFLAGS)
 
-%.d : %.cpp
-	$(CXX) $(CXXFLAGS) $< -MM >$@
+$(dep_prefix)/%.d : $(src_prefix)/%.cpp
+	@$(CXX) $(CXXFLAGS) $< -MM >$@
 
 include $(deps)

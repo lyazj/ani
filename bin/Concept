@@ -1,0 +1,158 @@
+#!/usr/bin/env python3
+#
+#    Copyright (C) 2021 @lyazj
+#
+#   This program is free software: you can redistribute it and/or modify
+#   it under the terms of the GNU General Public License as published by
+#   the Free Software Foundation, either version 3 of the License, or
+#   (at your option) any later version.
+#
+#   This program is distributed in the hope that it will be useful,
+#   but WITHOUT ANY WARRANTY; without even the implied warranty of
+#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#   GNU General Public License for more details.
+#
+#   You should have received a copy of the GNU General Public License
+#   along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+import ctypes
+import re
+import numpy as np
+import matplotlib.pyplot as plt
+import imageio
+import os
+import sys
+import multiprocessing as mp
+import platform
+import particle
+import enum
+
+run_path = os.path.join(sys.path[0], '..', 'run')
+lib_path = os.path.join('..', 'lib')
+infile = 'input.txt'
+outfile = 'output.txt'
+sofile = os.path.join(lib_path, 'libano.so')
+if(platform.system() == 'Windows'):
+  make = 'mingw32-make'
+  clean = 'clean -e "RM=del /f /q"'
+else:
+  make = 'make'
+  clean = 'clean'
+mbits = platform.architecture()[0][:2]
+
+class Particle:
+  def __init__(self, args):
+    self.no = args[0]
+    self.id = int(args[1])
+    self.name = args[2]
+    self.r = np.array(list(map(float, args[3:6])))
+    self.v = np.array(list(map(float, args[6:9])))
+    self.e = args[9]
+    self.m = args[10]
+    self.death = args[11]
+    self._get_attrib()
+  def __repr__(self):
+    return f'<{self.no}>{self.name}@{self.r}'
+
+  class Attrib(enum.IntEnum):
+    Other  = -1
+    Quark  =  0
+    Lepton =  1
+    Gluon  =  2
+    Gamma  =  3
+    ZW     =  4
+    Higgs  =  5
+    Meson  =  6
+    Baryon =  7
+
+  _attrib_name = {
+    Attrib.Other  : 'Other' ,
+    Attrib.Quark  : 'Quark' ,
+    Attrib.Lepton : 'Lepton',
+    Attrib.Gluon  : 'Gluon' ,
+    Attrib.Gamma  : 'Gamma' ,
+    Attrib.ZW     : 'ZW'    ,
+    Attrib.Higgs  : 'Higgs' ,
+    Attrib.Meson  : 'Meson' ,
+    Attrib.Baryon : 'Baryon',
+  }
+
+  @property
+  def attrib_name(self):
+    return Particle._attrib_name[self.attrib]
+
+  def _get_attrib(self):
+    id = abs(self.id)
+    if 1 <= id <= 8: self.attrib = Particle.Attrib.Quark
+    elif 11 <= id <= 18: self.attrib = Particle.Attrib.Lepton
+    elif id == 21: self.attrib = Particle.Attrib.Gluon
+    elif id == 22: self.attrib = Particle.Attrib.Gamma
+    elif id in {23,24,25,32,33,34,35,36}: self.attrib = Particle.Attrib.ZW
+    elif id == 37: self.attrib = Particle.Attrib.Higgs
+    else:
+      _id = particle.PythiaID(id).to_pdgid()
+      if(particle.pdgid.is_meson(_id)): self.attrib = Particle.Attrib.Meson
+      elif(particle.pdgid.is_baryon(_id)): self.attrib = Particle.Attrib.Baryon
+      else: self.attrib = Particle.Attrib.Other
+
+  _plot_colors = 'bgrcmykk'
+
+  def get_plot_format(self):
+    _fmt = Particle._plot_colors[int(self.attrib)]
+    if self.attrib == Particle.Attrib.Meson: _fmt += 's'
+    elif self.attrib == Particle.Attrib.Baryon: _fmt += '^'
+    elif self.attrib == Particle.Attrib.Other: _fmt += '*'
+    else: _fmt += 'o'
+    return _fmt
+
+particles = []
+
+os.chdir(run_path)
+try:
+  simulate = ctypes.CDLL(sofile).simulate_prolong
+except:
+  os.system(f'{make} -C .. {clean} && {make} -C .. libs'
+      f' -j {mp.cpu_count()} -e OUTER_CXXFLAGS=-m{mbits}')
+  simulate = ctypes.CDLL(sofile).simulate_prolong
+
+prolong = 15
+
+if not simulate(infile.encode(), outfile.encode(), prolong):
+  with open(outfile, 'r') as of:
+    out = of.read()
+  beg = out.find('\n', out.find('complete process (all)')) + 1
+  end = out.rfind('\n', beg, out.find('end of listing', beg))
+  if beg == 0 or end == -1:
+    print("ERROR: Invalid output from function `simulate`.")
+  else:
+    for i in re.split(r'\[.*\]', out[beg:end])[1:]:
+      particles.append([])
+      for j in i.strip().split('\n')[1:]:
+        particles[-1].append(Particle(j.strip().split()))
+
+    fig = plt.figure()
+    ax = fig.add_subplot(111, projection='3d')
+    for ph in range(len(particles)):
+      ax.set_xlim([-5, 5])
+      ax.set_ylim([-5, 5])
+      ax.set_zlim([-25, 25])
+      print('Plotting phase:', ph)
+
+      _have_legend = set()
+      for p in particles[ph]:
+        dot = ax.plot(*p.r, p.get_plot_format())
+        if p.attrib not in _have_legend:
+           dot[0].set_label(p.attrib_name)
+           _have_legend.add(p.attrib)
+      ax.legend(loc = 1)
+
+      print(f'Saving image: phase_{ph}.png... ', end = '', flush = True)
+      plt.savefig(f'phase_{ph}.png')
+      plt.cla()
+      print('OK!')
+
+    print('Generating gif file... ', flush = True, end = '')
+    imageio.mimsave('concept.gif',
+        (imageio.imread(f'phase_{ph}.png') for ph in range(len(particles))),
+        'GIF', duration = 0.05)
+    print('OK!')
