@@ -36,9 +36,9 @@ pres = $(obj_prefix) $(lib_prefix) $(bin_prefix)
 
 CXXFLAGS = -O2 -I$(inc_prefix) $(OUTER_CXXFLAGS)
 LDFLAGS = -L$(lib_prefix) -lano \
-					-Wl,-rpath=. \
-					-Wl,-rpath=$(lib_prefix) \
-					-Wl,-rpath=$(bin_to_lib_prefix)
+          -Wl,-rpath=. \
+          -Wl,-rpath=$(lib_prefix) \
+          -Wl,-rpath=$(bin_to_lib_prefix)
 
 all : libs bins
 
