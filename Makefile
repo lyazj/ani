@@ -32,6 +32,7 @@ objs = $(obj_names:%=$(obj_prefix)/%)
 libs = $(lib_names:%=$(lib_prefix)/%)
 bins = $(bin_names:%=$(bin_prefix)/%)
 deps = $(dep_names:%=$(dep_prefix)/%)
+pres = $(obj_prefix) $(lib_prefix) $(bin_prefix)
 
 CXXFLAGS = -O2 -I$(inc_prefix) $(OUTER_CXXFLAGS)
 LDFLAGS = -L$(lib_prefix) -lano \
@@ -58,7 +59,10 @@ $(lib_prefix)/libano.so : $(objs)
 $(bin_prefix)/% : $(obj_prefix)/%.o $(libs)
 	$(CXX) $(CXXFLAGS) $< -o $@ $(LDFLAGS)
 
-$(dep_prefix)/%.d : $(src_prefix)/%.cpp
+$(dep_prefix)/%.d : $(src_prefix)/%.cpp $(pres)
 	@$(CXX) $(CXXFLAGS) $< -MM >$@
+
+$(pres) :
+	mkdir -p $@
 
 include $(deps)
