@@ -6,7 +6,7 @@
 
 ## 外部依赖
 
-python3 (with numpy, matplotlib, imageio), a C++ Compiler (e.g. g++)
+python3 (with numpy, matplotlib, imageio, particle), a C++ Compiler (e.g. g++)
 
 ### on Windows
 mingw32-make (TDM-GCC recommended, especially for 32-bit python.exe on 64-bit Win-Platform)
@@ -24,7 +24,7 @@ make
 
 在任意平台下可使用`pip list`查看安装的python软件包或直接在python交互界面上进行`import`测试。
 
-我们需要保证`numpy`，`matplotlib`，`imageio`这三个软件包已正确安装。
+我们需要保证`numpy`，`matplotlib`，`imageio`，`particle`这几个软件包已正确安装。
 
 【步骤二】（可选）使用你生成的pythia8日至文件替换软件目录下的input.txt。
 
