@@ -47,11 +47,10 @@ libs : $(libs)
 bins : $(bins)
 
 clean :
-	$(RM) $(objs) $(libs) $(bins) $(deps)
+	$(RM) $(objs) $(libs) $(bins) $(obj_prefix)/$(bin_names:%=%.o) $(deps)
 
 $(obj_prefix)/%.o : $(src_prefix)/%.cpp
 	$(CXX) $(CXXFLAGS) $< -o $@ -c -fPIC
-	@$(RM) $(@:%.o=%.d)
 
 $(lib_prefix)/libano.so : $(objs)
 	$(CXX) $(CXXFLAGS) $^ -o $@ -shared -fPIC
@@ -60,7 +59,10 @@ $(bin_prefix)/% : $(obj_prefix)/%.o $(libs)
 	$(CXX) $(CXXFLAGS) $< -o $@ $(LDFLAGS)
 
 $(dep_prefix)/%.d : $(src_prefix)/%.cpp $(pres)
-	@$(CXX) $(CXXFLAGS) $< -MM >$@
+	@>$@ echo "$(subst  \ ,,$(patsubst %.o:,$(obj_prefix)/%.o:, \
+		$(shell $(CXX) $(CXXFLAGS) $< -MM)))"
+
+$(obj_prefix)/%.o : %.o
 
 $(pres) :
 	mkdir -p $@
