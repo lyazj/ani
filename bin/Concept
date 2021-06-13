@@ -15,30 +15,31 @@
 #   You should have received a copy of the GNU General Public License
 #   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-import ctypes
 import re
+import os
+import sys
+import enum
+import ctypes
+import platform
+import multiprocessing as mp
+
 import numpy as np
 import matplotlib.pyplot as plt
 import imageio
-import os
-import sys
-import multiprocessing as mp
-import platform
 import particle
-import enum
 
-run_path = os.path.join(sys.path[0], '..', 'run')
-lib_path = os.path.join('..', 'lib')
+os.chdir(os.path.join(os.path.dirname(__file__), '..', 'run'))
 infile = 'input.txt'
 outfile = 'output.txt'
-sofile = os.path.join(lib_path, 'libano.so')
-if(platform.system() == 'Windows'):
-  make = 'mingw32-make'
-  clean = 'clean -e "RM=del /f /q"'
-else:
-  make = 'make'
-  clean = 'clean'
+sofile = os.path.join('..', 'lib', 'libani.so')
+ncpu = mp.cpu_count()
 mbits = platform.architecture()[0][:2]
+try:
+  simulate = ctypes.CDLL(sofile).simulate_prolong
+except:
+  os.system(f'make -C .. libs -j {ncpu} -e OUTER_CXXFLAGS=-m{mbits}')
+  simulate = ctypes.CDLL(sofile).simulate_prolong
+prolong = 7
 
 class Particle:
   def __init__(self, args):
@@ -106,16 +107,6 @@ class Particle:
     return _fmt
 
 particles = []
-
-os.chdir(run_path)
-try:
-  simulate = ctypes.CDLL(sofile).simulate_prolong
-except:
-  os.system(f'{make} -C .. {clean} && {make} -C .. libs'
-      f' -j {mp.cpu_count()} -e OUTER_CXXFLAGS=-m{mbits}')
-  simulate = ctypes.CDLL(sofile).simulate_prolong
-
-prolong = 15
 
 if not simulate(infile.encode(), outfile.encode(), prolong):
   with open(outfile, 'r') as of:

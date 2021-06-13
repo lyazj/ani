@@ -6,33 +6,53 @@
 
 ## 外部依赖
 
-python3 (with numpy, matplotlib, imageio, particle), a C++ Compiler (e.g. g++)
+* a Linux Os (e.g. Ubuntu)
+* python3 with numpy, matplotlib, imageio, particle
+* a C++ Compiler (e.g. g++)
+* make
 
-### on Windows
-mingw32-make (TDM-GCC recommended, especially for 32-bit python.exe on 64-bit Win-Platform)
+## 使用步骤
 
-### Linux
-make
+1. 打开shell（bash或dash），获取项目的完整拷贝：
 
-## 使用方法
+    $ git clone https://github.com/lyazj/ani.git
+    $ cd ani
 
-【步骤一】安装外部依赖并确保软件目录下所有依赖的可访问性。检验步骤如下：
+   开头的美元符号`$`为shell的提示符，你也可能看到井号（`#`）。
 
-在Windows上可使用`cmd`切换（`cd /d`）至软件目录下执行`where python g++ mingw32-make`指令。
+2. 安装外部依赖并确保软件目录下所有依赖的可访问性。以Ubuntu为例：
 
-在Linux上可用`whereis python3 g++ make`。
+  * 安装python第三方库：
 
-在任意平台下可使用`pip list`查看安装的python软件包或直接在python交互界面上进行`import`测试。
+    $ sudo apt-get install python3-pip
+    $ pip install numpy matplotlib imageio particle
 
-我们需要保证`numpy`，`matplotlib`，`imageio`，`particle`这几个软件包已正确安装。
+  * 安装C++编译器和make：（以g++为例）
 
-【步骤二】（可选）使用你生成的pythia8日至文件替换软件目录下的input.txt。
+    $ sudo apt install g++ make
 
-【步骤三】在软件目录或其中的bin目录下，执行Concept：
+  * 检查是否安装成功：
 
-在Windows上可在cmd中切换至软件目录执行`python bin/Concept`，或在`bin`目录下执行`python Concept`。
+    $ python3
+    >>> import numpy
+    >>> import matplotlib
+    >>> import imageio
+    >>> import particle
+    >>> exit()  # or just press Ctrl-D **once**
+    $ g++ --version
+    $ make --version
 
-在Linux上可直接执行`bin/Concept`或`./Concept`。
+    成功的标志为执行第一条指令可进入python3（观察到有版本和版权等信息输出，提示符变为三个大于号），进行各import操作不报错，退回shell执行最后两条指令看到版本信息输出。
+
+3. （可选）使用你生成的pythia8日至文件替换软件目录下的input.txt。
+
+4. 在软件目录或其中的bin目录下，执行Concept，比如我们刚才已经进入了软件目录，则可以执行：
+
+    $ bin/Concept
+
+   或：
+
+    $ pushd bin; ./Concept
 
 ## 功能介绍
 

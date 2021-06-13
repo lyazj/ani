@@ -20,7 +20,7 @@ src_prefix = src
 obj_prefix = tmp
 obj_names = Utility.o Particle.o System.o Interface.o
 lib_prefix = lib
-lib_names = libano.so
+lib_names = libani.so
 bin_prefix = bin
 bin_names = Simulate
 dep_prefix = $(obj_prefix)
@@ -35,7 +35,7 @@ deps = $(dep_names:%=$(dep_prefix)/%)
 pres = $(obj_prefix) $(lib_prefix) $(bin_prefix)
 
 CXXFLAGS = -O2 -I$(inc_prefix) $(OUTER_CXXFLAGS)
-LDFLAGS = -L$(lib_prefix) -lano \
+LDFLAGS = -L$(lib_prefix) -lani \
           -Wl,-rpath=. \
           -Wl,-rpath=$(lib_prefix) \
           -Wl,-rpath=$(bin_to_lib_prefix)
@@ -47,12 +47,12 @@ libs : $(libs)
 bins : $(bins)
 
 clean :
-	$(RM) $(objs) $(libs) $(bins) $(obj_prefix)/$(bin_names:%=%.o) $(deps)
+	$(RM) $(objs) $(obj_prefix)/$(bin_names:%=%.o) $(libs) $(bins) $(deps)
 
 $(obj_prefix)/%.o : $(src_prefix)/%.cpp
 	$(CXX) $(CXXFLAGS) $< -o $@ -c -fPIC
 
-$(lib_prefix)/libano.so : $(objs)
+$(lib_prefix)/libani.so : $(objs)
 	$(CXX) $(CXXFLAGS) $^ -o $@ -shared -fPIC
 
 $(bin_prefix)/% : $(obj_prefix)/%.o $(libs)
