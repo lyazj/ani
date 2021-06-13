@@ -6,7 +6,7 @@
 
 ## 外部依赖
 
-* a Linux Os (e.g. Ubuntu)
+* a Linux OS (e.g. Ubuntu)
 * python3 with numpy, matplotlib, imageio, particle
 * a C++ Compiler (e.g. g++)
 * make
@@ -15,8 +15,8 @@
 
 1. 打开shell（bash或dash），获取项目的完整拷贝：
 
-    $ git clone https://github.com/lyazj/ani.git
-    $ cd ani
+       $ git clone https://github.com/lyazj/ani.git
+       $ cd ani
 
    开头的美元符号`$`为shell的提示符，你也可能看到井号（`#`）。
 
@@ -24,23 +24,23 @@
 
   * 安装python第三方库：
 
-    $ sudo apt-get install python3-pip
-    $ pip install numpy matplotlib imageio particle
+        $ sudo apt-get install python3-pip
+        $ pip install numpy matplotlib imageio particle
 
   * 安装C++编译器和make：（以g++为例）
 
-    $ sudo apt install g++ make
+        $ sudo apt install g++ make
 
   * 检查是否安装成功：
 
-    $ python3
-    >>> import numpy
-    >>> import matplotlib
-    >>> import imageio
-    >>> import particle
-    >>> exit()  # or just press Ctrl-D **once**
-    $ g++ --version
-    $ make --version
+        $ python3
+        >>> import numpy
+        >>> import matplotlib
+        >>> import imageio
+        >>> import particle
+        >>> exit()  # or just press Ctrl-D **once**
+        $ g++ --version
+        $ make --version
 
     成功的标志为执行第一条指令可进入python3（观察到有版本和版权等信息输出，提示符变为三个大于号），进行各import操作不报错，退回shell执行最后两条指令看到版本信息输出。
 
@@ -48,11 +48,11 @@
 
 4. 在软件目录或其中的bin目录下，执行Concept，比如我们刚才已经进入了软件目录，则可以执行：
 
-    $ bin/Concept
+       $ bin/Concept
 
    或：
 
-    $ pushd bin; ./Concept
+       $ pushd bin; ./Concept
 
 ## 功能介绍
 
