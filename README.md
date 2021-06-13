@@ -28,15 +28,15 @@ make
 
 【步骤二】（可选）使用你生成的pythia8日至文件替换软件目录下的input.txt。
 
-【步骤三】确保工作目录为软件目录，执行Concept.py：
+【步骤三】在软件目录或其中的bin目录下，执行Concept：
 
-在Windows上可在cmd中执行`python Concept.py`。
+在Windows上可在cmd中切换至软件目录执行`python bin/Concept`，或在`bin`目录下执行`python Concept`。
 
-在Linux上可使用`chmod +x Concept.py`获得可执行权限后直接执行`./Concept.py`。
+在Linux上可直接执行`bin/Concept`或`./Concept`。
 
 ## 功能介绍
 
-Concepy.py用于生成高能对撞机动画的概念模型。程序将自动调用Makefile中的指令生成库文件libano.so（在Windows上实际为dll，为了方便统一扩展名为.so），而后调用C接口函数simulate根据input.txt中的信息生成粒子运动模拟的数据，存储于output.txt中，最后使用matplotlib对每一时段（phase）进行可视化处理并使用imageio将前一步骤生成的离散的phase_\*.png文件整合为concept.gif。
+Concepy用于生成高能对撞机动画的概念模型。程序将自动调用Makefile中的指令生成库文件libano.so（在Windows上实际为dll，为了方便统一扩展名为.so），而后调用C接口函数simulate根据input.txt中的信息生成粒子运动模拟的数据，存储于output.txt中，最后使用matplotlib对每一时段（phase）进行可视化处理并使用imageio将前一步骤生成的离散的phase_\*.png文件整合为concept.gif。
 
 软件对时段的划分方法是一个基本的递推关系，即规定系统(system, no = 0)的时段为0，所有粒子的时段均为其所有母亲时段的最大值加一。另外软件假设当任意粒子的女儿出现时它就被消灭了，每个时段仅画出并画出所有已经产生且未被消灭的粒子。
 
