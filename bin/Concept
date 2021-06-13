@@ -40,6 +40,10 @@ except:
   os.system(f'make -C .. libs -j {ncpu} -e OUTER_CXXFLAGS=-m{mbits}')
   simulate = ctypes.CDLL(sofile).simulate_prolong
 prolong = 7
+duration = 0.5  # spf
+xlim = -10, 10
+ylim = -10, 10
+zlim = -25, 25
 
 class Particle:
   def __init__(self, args):
@@ -124,9 +128,9 @@ if not simulate(infile.encode(), outfile.encode(), prolong):
     fig = plt.figure()
     ax = fig.add_subplot(111, projection='3d')
     for ph in range(len(particles)):
-      ax.set_xlim([-5, 5])
-      ax.set_ylim([-5, 5])
-      ax.set_zlim([-25, 25])
+      ax.set_xlim(xlim)
+      ax.set_ylim(ylim)
+      ax.set_zlim(zlim)
       print('Plotting phase:', ph)
 
       _have_legend = set()
@@ -145,5 +149,5 @@ if not simulate(infile.encode(), outfile.encode(), prolong):
     print('Generating gif file... ', flush = True, end = '')
     imageio.mimsave('concept.gif',
         (imageio.imread(f'phase_{ph}.png') for ph in range(len(particles))),
-        'GIF', duration = 0.05)
+        'GIF', duration = duration)
     print('OK!')
