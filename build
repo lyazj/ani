@@ -19,22 +19,27 @@ import os
 import sys
 import multiprocessing
 
-os.chdir(os.path.dirname(__file__))
-
 jobs = multiprocessing.cpu_count()
 linkage = str()
 bits = str()
 
-sys.argv = sys.argv[1:]
-
-if len(sys.argv) > 0:
-  if sys.argv[0] == '32':
+if len(sys.argv) > 1:
+  if sys.argv[1] == 'ALL':
+    os.system(' '.join([f'{sys.argv[0]} 32'] + sys.argv[2:]))
+    os.system(' '.join([f'{sys.argv[0]} 64'] + sys.argv[2:]))
+    sys.argv = sys.argv[1:]
+  elif sys.argv[1] == 'ELF':
+    sys.argv = sys.argv[1:]
+  elif sys.argv[1] == '32':
     linkage = " -e 'linkage=WIN'"
     bits = " -e 'bits=32'"
     sys.argv = sys.argv[1:]
-  elif sys.argv[0] == '64':
+  elif sys.argv[1] == '64':
     linkage = " -e 'linkage=WIN'"
     bits = " -e 'bits=64'"
     sys.argv = sys.argv[1:]
 
-os.system(' '.join([f"make -j {jobs}{linkage}{bits}"] + sys.argv))
+sys.argv = sys.argv[1:]
+
+os.chdir(os.path.dirname(__file__))
+os.system(' '.join([f'make -j {jobs}{linkage}{bits}'] + sys.argv))

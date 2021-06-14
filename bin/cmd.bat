@@ -1,0 +1,1 @@
+@%SYSTEMROOT%\System32\cmd.exe /s /k path %CD%;%CD%\..\lib;%PATH%

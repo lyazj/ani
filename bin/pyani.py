@@ -35,7 +35,14 @@ def load_lib_symbol(lib_name, symbol_name):
   return load_lib(lib_name).symbol_name
 
 lib_name = 'ani'
-lib = load_lib(lib_name)
+try:
+  lib = load_lib(lib_name)
+except:
+  if platform.system() == 'Windows':
+    raise
+  make = os.path.join(os.path.dirname(__file__), '..', 'build')
+  os.system(f'{make} clean && {make} libs')
+  lib = load_lib(lib_name)
 
 def simulate(infile = '-', outfile = '-', prolong = 0):
   return lib.simulate_prolong(infile.encode(), outfile.encode(), prolong)
