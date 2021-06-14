@@ -18,6 +18,7 @@
 # Available linkage: ELF WIN
 linkage = ELF
 # Available bits (for WIN only): 32, 64
+# Discarded when linkage is set as ELF
 bits = 64
 
 obj_bases = Utility Particle System Interface
@@ -74,14 +75,29 @@ LDFLAGS = -L$(lib_prefix) $(patsubst lib%,-l%,$(basename $(lib_names))) \
           -Wl,-rpath=$(lib_prefix) \
           -Wl,-rpath=$(bin_to_lib_prefix)
 
-all : libs bins
+all : check libs bins
 
-libs : $(libs)
+libs : check $(libs)
 
-bins : $(bins)
+bins : check $(bins)
 
-clean :
+clean : check
 	$(RM) $(libs) $(bins) $(deps) $(deps:%$(dep_postfix)=%$(obj_postfix))
+
+check :
+ifneq ($(linkage),ELF)
+  ifeq ($(linkage),WIN)
+    ifneq ($(bits),32)
+    ifneq ($(bits),64)
+	@>&2 echo ERROR: Invalid bits: \'$(bits)\'.
+	@exit 1
+    endif
+    endif
+  else
+	@>&2 echo ERROR: Invalid linkage: \'$(linkage)\'.
+	@exit 1
+  endif
+endif
 
 $(obj_prefix)/%$(obj_postfix) : $(src_prefix)/%$(src_postfix)
 	$(CXX) $(CXXFLAGS) $< -o $@ -c -fPIC
