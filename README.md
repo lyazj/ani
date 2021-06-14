@@ -72,10 +72,10 @@ Concept用于生成高能对撞机动画的概念模型。程序将自动调用M
 
 使用软件目录下的build可以方便地生成跨平台代码，如：
 
-    ./build ALL all
+    $ ./build ALL all
 
 为所有平台生成所有二进制代码。
 
-    ./build 64 libs
+    $ ./build 64 libs
 
 为64位Windows平台生成动态库。
