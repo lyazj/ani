@@ -30,6 +30,16 @@ T correct(T t, T t_min = T(-1), T t_max = T(1))
   return std::min(std::max(t, t_min), t_max);
 }
 
+constexpr double radians(double deg)
+{
+  return deg * M_PI / 180;
+}
+
+constexpr double degrees(double rad)
+{
+  return rad / M_PI * 180;
+}
+
 template<class T, size_t n>
 struct Polar;
 
@@ -58,6 +68,20 @@ struct Direction {
     return pol;
   }
 
+  Direction operator+() const
+  {
+    Direction dir(*this);
+    for(size_t i = 1; i < n; ++i)
+      dir[i] *= T(1);
+    return dir;
+  }
+  Direction operator-() const
+  {
+    Direction dir(*this);
+    for(size_t i = 1; i < n; ++i)
+      dir[i] *= T(-1);
+    return dir;
+  }
   Direction &operator+=(const Direction &rhs)
   {
     for(size_t i = 0; i < n - 1; ++i)
@@ -227,14 +251,4 @@ operator<<(std::ostream &os, const Polar<T, n> &v)
   for(size_t i = 1; i < n; ++i)
     os << " " << v[i];
   return os;
-}
-
-constexpr double radians(double deg)
-{
-  return deg * M_PI / 180;
-}
-
-constexpr double degrees(double rad)
-{
-  return rad / M_PI * 180;
 }

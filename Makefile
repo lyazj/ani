@@ -23,7 +23,7 @@ bits = 64
 
 obj_bases = Utility Particle System Interface
 lib_bases = ani
-bin_bases = sim
+bin_bases = sim obs
 dep_bases = $(obj_bases) $(bin_bases)
 
 inc_postfix = .h

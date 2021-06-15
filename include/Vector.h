@@ -29,6 +29,14 @@ struct Vector {
   T &operator[](size_t i) { return data[i]; }
   const T &operator[](size_t i) const { return data[i]; }
 
+  Vector operator+() const
+  {
+    return *this * T(1);
+  }
+  Vector operator-() const
+  {
+    return *this * T(-1);
+  }
   Vector &operator+=(const Vector &rhs)
   {
     for(size_t i = 0; i < n; ++i)

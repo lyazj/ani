@@ -24,10 +24,6 @@ struct Observer {
 
   Vector<double, 3> observe(const Vector<double, 3> &r)
   {
-    return rotate(translate(r, r0), d0 - d_norm);
+    return rotate(translate(r, r0), d0);
   }
-
-  static constexpr Direction<double, 3> d_norm = {
-    radians(90), radians(0)
-  };
 };
