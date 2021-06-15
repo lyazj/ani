@@ -108,7 +108,6 @@ operator<<(std::ostream &os, const Vector<T, n> &v)
     os << " " << v[i];
   return os;
 }
-
 template<class T> std::ostream &
 operator<<(std::ostream &os, const Vector<T, 0> &v)
 {
