@@ -41,75 +41,7 @@ constexpr double degrees(double rad)
 }
 
 template<class T, size_t n>
-struct Polar;
-
-template<class T, size_t n>
-struct Direction {
-  static_assert(n > 0, "zero size of Direction forbiden");
-
-  T data[n - 1];
-  T &operator[](size_t i)
-  {
-    return i == 0 ? (_r = T(1)) : data[i - 1];
-  }
-  const T &operator[](size_t i) const
-  {
-    return i == 0 ? (_r = T(1)) : data[i - 1];
-  }
-
-  static T _r;
-
-  operator Polar<T, n>() const
-  {
-    Polar<T, n> pol;
-    pol[0] = T(1);
-    for(size_t i = 1; i < n; ++i)
-      pol[i] = data[i - 1];
-    return pol;
-  }
-
-  Direction operator+() const
-  {
-    Direction dir(*this);
-    for(size_t i = 1; i < n; ++i)
-      dir[i] *= T(1);
-    return dir;
-  }
-  Direction operator-() const
-  {
-    Direction dir(*this);
-    for(size_t i = 1; i < n; ++i)
-      dir[i] *= T(-1);
-    return dir;
-  }
-  Direction &operator+=(const Direction &rhs)
-  {
-    for(size_t i = 0; i < n - 1; ++i)
-      data[i] += rhs.data[i];
-    return *this;
-  }
-  Direction &operator-=(const Direction &rhs)
-  {
-    for(size_t i = 0; i < n - 1; ++i)
-      data[i] -= rhs.data[i];
-    return *this;
-  }
-};
-
-template<class T, size_t n>
-T Direction<T, n>::_r = T(1);
-
-template<class T, size_t n> Direction<T, n>
-operator+(Direction<T, n> lhs, const Direction<T, n> &rhs)
-{
-  return lhs += rhs;
-}
-
-template<class T, size_t n> Direction<T, n>
-operator-(Direction<T, n> lhs, const Direction<T, n> &rhs)
-{
-  return lhs -= rhs;
-}
+struct Direction;
 
 template<class T, size_t n>
 struct Polar
@@ -143,6 +75,11 @@ struct Polar
       r *= sin(data[i]);
     }
     return vec;
+  }
+
+  Vector<T, n> vector() const
+  {
+    return Vector<T, n>(*this);
   }
 
   Direction<T, n> direction() const
@@ -185,6 +122,11 @@ struct Polar<T, 3>
     return vec;
   }
 
+  Vector<T, 3> vector() const
+  {
+    return Vector<T, 3>(*this);
+  }
+
   Direction<T, 3> direction() const
   {
     Direction<T, 3> dir;
@@ -193,6 +135,77 @@ struct Polar<T, 3>
     return dir;
   }
 };
+
+template<class T, size_t n>
+struct Direction {
+  static_assert(n > 0, "zero size of Direction forbiden");
+
+  T data[n - 1];
+  T &operator[](size_t i)
+  {
+    return i == 0 ? (_r = T(1)) : data[i - 1];
+  }
+  const T &operator[](size_t i) const
+  {
+    return i == 0 ? (_r = T(1)) : data[i - 1];
+  }
+
+  static T _r;
+
+  Polar<T, n> polar() const
+  {
+    Polar<T, n> pol;
+    pol[0] = T(1);
+    for(size_t i = 1; i < n; ++i)
+      pol[i] = data[i - 1];
+    return pol;
+  }
+
+  Vector<T, n> vector() const
+  {
+    return polar().vector();
+  }
+
+  Direction operator+() const
+  {
+    return Direction(*this);
+  }
+  Direction operator-() const
+  {
+    Direction dir(*this);
+    for(size_t i = 1; i < n; ++i)
+      dir[i] *= T(-1);
+    return dir;
+  }
+  Direction &operator+=(const Direction &rhs)
+  {
+    for(size_t i = 0; i < n - 1; ++i)
+      data[i] += rhs.data[i];
+    return *this;
+  }
+  Direction &operator-=(const Direction &rhs)
+  {
+    for(size_t i = 0; i < n - 1; ++i)
+      data[i] -= rhs.data[i];
+    return *this;
+  }
+};
+
+template<class T, size_t n>
+T Direction<T, n>::_r = T(1);
+
+template<class T, size_t n> Direction<T, n>
+operator+(Direction<T, n> lhs, const Direction<T, n> &rhs)
+{
+  return lhs += rhs;
+}
+
+template<class T, size_t n> Direction<T, n>
+operator-(Direction<T, n> lhs, const Direction<T, n> &rhs)
+{
+  return lhs -= rhs;
+}
+
 
 template<class T, size_t n>
 Vector<T, n> translate(Vector<T, n> r, const Vector<T, n> &r0)
@@ -215,6 +228,23 @@ Vector<T, n> rotate(const Vector<T, n> &r, const Direction<T, n> &d)
 }
 
 template<class T, size_t n> std::istream &
+operator>>(std::istream &is, Polar<T, n> &v)
+{
+  for(size_t i = 0; i < n; ++i)
+    is >> v[i];
+  return is;
+}
+
+template<class T, size_t n> std::ostream &
+operator<<(std::ostream &os, const Polar<T, n> &v)
+{
+  os << v[0];
+  for(size_t i = 1; i < n; ++i)
+    os << " " << v[i];
+  return os;
+}
+
+template<class T, size_t n> std::istream &
 operator>>(std::istream &is, Direction<T, n> &v)
 {
   for(size_t i = 1; i < n; ++i)
@@ -233,22 +263,5 @@ operator<<(std::ostream &os, const Direction<T, n> &v)
 template<class T> std::ostream &
 operator<<(std::ostream &os, const Direction<T, 1> &v)
 {
-  return os;
-}
-
-template<class T, size_t n> std::istream &
-operator>>(std::istream &is, Polar<T, n> &v)
-{
-  for(size_t i = 0; i < n; ++i)
-    is >> v[i];
-  return is;
-}
-
-template<class T, size_t n> std::ostream &
-operator<<(std::ostream &os, const Polar<T, n> &v)
-{
-  os << v[0];
-  for(size_t i = 1; i < n; ++i)
-    os << " " << v[i];
   return os;
 }

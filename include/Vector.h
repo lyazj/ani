@@ -24,6 +24,12 @@
 #include <math.h>
 
 template<class T, size_t n>
+struct Polar;
+
+template<class T, size_t n>
+struct Direction;
+
+template<class T, size_t n>
 struct Vector {
   T data[n];
   T &operator[](size_t i) { return data[i]; }
@@ -31,7 +37,7 @@ struct Vector {
 
   Vector operator+() const
   {
-    return *this * T(1);
+    return *this;
   }
   Vector operator-() const
   {
@@ -68,6 +74,16 @@ struct Vector {
     for(size_t i = 0; i < n; ++i)
       rst += pow(data[i], 2);
     return pow(rst, 0.5);
+  }
+
+  Polar<T, n> polar() const
+  {
+    return Polar<T, n>(*this);
+  }
+
+  Direction<T, n> direction() const
+  {
+    return polar().direction();
   }
 };
 
