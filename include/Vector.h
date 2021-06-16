@@ -17,17 +17,9 @@
 #pragma once
 
 #include <stddef.h>
-
-#include <iostream>
-#include <numeric>
-
 #include <math.h>
 
-template<class T, size_t n>
-struct Polar;
-
-template<class T, size_t n>
-struct Direction;
+#include <iostream>
 
 template<class T, size_t n>
 struct Vector {
@@ -74,16 +66,6 @@ struct Vector {
     for(size_t i = 0; i < n; ++i)
       rst += pow(data[i], 2);
     return pow(rst, 0.5);
-  }
-
-  Polar<T, n> polar() const
-  {
-    return Polar<T, n>(*this);
-  }
-
-  Direction<T, n> direction() const
-  {
-    return polar().direction();
   }
 };
 

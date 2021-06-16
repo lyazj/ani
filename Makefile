@@ -23,7 +23,7 @@ bits = 64
 
 obj_bases = Utility Particle System Interface
 lib_bases = ani
-bin_bases = sim obs
+bin_bases = sim
 dep_bases = $(obj_bases) $(bin_bases)
 
 inc_postfix = .h
@@ -104,9 +104,15 @@ $(obj_prefix)/%$(obj_postfix) : $(src_prefix)/%$(src_postfix)
 
 $(lib_prefix)/libani$(lib_postfix) : $(objs)
 	$(CXX) $(CXXFLAGS) $^ -o $@ -shared -fPIC
+ifeq ($(lib_postfix),.so)
+	strip $@
+endif
 
 $(bin_prefix)/%$(bin_postfix) : $(obj_prefix)/%$(obj_postfix) $(libs)
 	$(CXX) $(CXXFLAGS) $< -o $@ $(LDFLAGS)
+ifeq ($(bin_postfix),)
+	strip $@
+endif
 
 $(obj_prefix)/%$(dep_postfix) : $(src_prefix)/%$(src_postfix) $(pres)
 	@>$@ echo "$(subst  \ ,,$(patsubst %.o:,$(obj_prefix)/%$(obj_postfix):, \
