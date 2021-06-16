@@ -206,7 +206,6 @@ operator-(Direction<T, n> lhs, const Direction<T, n> &rhs)
   return lhs -= rhs;
 }
 
-
 template<class T, size_t n>
 Vector<T, n> translate(Vector<T, n> r, const Vector<T, n> &r0)
 {
