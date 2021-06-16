@@ -173,8 +173,9 @@ struct Direction {
   Direction operator-() const
   {
     Direction dir(*this);
-    for(size_t i = 1; i < n; ++i)
-      dir[i] *= T(-1);
+    for(size_t i = 1; i < n - 1; ++i)
+      dir[i] = M_PI - dir[i];
+    dir[n - 1] += M_PI;
     return dir;
   }
   Direction &operator+=(const Direction &rhs)
