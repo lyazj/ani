@@ -6,6 +6,7 @@
   * [`Particle`类](#Particle类)
   * [`Particle_Printer`类](#Particle_Printer类)
   * [`System`类](#System类)
+  * [`Transformer`类](#Transformer类)
 * [接口函数定义](#接口函数定义)
   * [`C++`接口函数](#C接口函数)
   * [`C`接口函数（兼容`python`）](#C接口函数兼容python)
@@ -382,6 +383,48 @@
 对`System`对象进行输入操作时，用户需要确保程序可以从输入流中读取完整的`pythia8`日志信息，且没有其它无关的信息。程序确保输入操作符函数退回时所需信息（目前为`pythia8`日志中的介绍部分、硬散射过程的粒子信息、完整过程的粒子信息）全部收集完毕，但不会一直向流中读取数据直到输入流处于无效状态。并且，函数退回前会对每个`Subsystem`中的信息进行加工，确保满足[`Particle`类数据成员](#数据成员-2)说明中列出的5条约定。当退回无效流状态时，被作用的`System`对象是未定义的，用户应进行错误检查。
 
 对`System`对象进行输出操作时，程序会自动调用`build_*`函数进行自我处理，该过程可能抛出异常。程序经过建立索引（时段划分）、计算粒子生命周期和每个时段开始时的位置和速度等过程后，将运算结果写入输出流中。每次`System`对象的输出操作将获得四段信息，分别为硬过程每时段新增粒子的信息、硬过程每时段所有存在的粒子的信息，以及完整过程相应的两块信息。每串信息首尾都有长串星花（`*`）包围的说明信息分隔，方便用户进行切割处理。输出操作可能改变`System`对象，但仅限于建立索引和写入一些辅助信息。当退回无效流状态时，被作用的`System`对象依然有效。
+
+### `Transformer`类
+
+坐标变换类。我们对转动变换的处理方式如下：设
+
+<img src="https://latex.codecogs.com/gif.latex?\begin{bmatrix}\vec{i^\prime}&\vec{j^\prime}&\vec{k^\prime}\end{bmatrix}\begin{bmatrix}x^\prime\\y^\prime\\z^\prime\end{bmatrix}=\begin{bmatrix}\vec{i}&\vec{j}&\vec{k}\end{bmatrix}\begin{bmatrix}x\\y\\z\end{bmatrix}"/>
+
+其中字母加撇不表示转置，而表示新坐标或新基底。两边同时左乘新坐标基底构成的矩阵之转置得到：
+
+<img src="https://latex.codecogs.com/gif.latex?\begin{bmatrix}\vec{i^\prime}&\vec{j^\prime}&\vec{k^\prime}\end{bmatrix}^T\begin{bmatrix}\vec{i^\prime}&\vec{j^\prime}&\vec{k^\prime}\end{bmatrix}\begin{bmatrix}x^\prime\\y^\prime\\z^\prime\end{bmatrix}=\begin{bmatrix}\vec{i^\prime}&\vec{j^\prime}&\vec{k^\prime}\end{bmatrix}^T\begin{bmatrix}\vec{i}&\vec{j}&\vec{k}\end{bmatrix}\begin{bmatrix}x\\y\\z\end{bmatrix}"/>
+
+假设新基底为标准正交基，则：
+
+<img src="https://latex.codecogs.com/gif.latex?\begin{bmatrix}\vec{i^\prime}&\vec{j^\prime}&\vec{k^\prime}\end{bmatrix}^T\begin{bmatrix}\vec{i^\prime}&\vec{j^\prime}&\vec{k^\prime}\end{bmatrix}=I"/>
+
+又由于：
+
+<img src="https://latex.codecogs.com/gif.latex?\begin{bmatrix}\vec{i^\prime}&\vec{j^\prime}&\vec{k^\prime}\end{bmatrix}^T\begin{bmatrix}\vec{i}&\vec{j}&\vec{k}\end{bmatrix}=\begin{bmatrix}\vec{i^\prime}\cdot\vec{i}&\vec{i^\prime}\cdot\vec{j}&\vec{i^\prime}\cdot\vec{k}\\\vec{j^\prime}\cdot\vec{i}&\vec{j^\prime}\cdot\vec{j}&\vec{j^\prime}\cdot\vec{k}\\\vec{k^\prime}\cdot\vec{i}&\vec{k^\prime}\cdot\vec{j}&\vec{k^\prime}\cdot\vec{k}\\\end{bmatrix}"/>
+
+故：
+
+<img src="https://latex.codecogs.com/gif.latex?\begin{bmatrix}x^\prime\\y^\prime\\z^\prime\end{bmatrix}=\begin{bmatrix}\vec{i^\prime}\cdot\vec{i}&\vec{i^\prime}\cdot\vec{j}&\vec{i^\prime}\cdot\vec{k}\\\vec{j^\prime}\cdot\vec{i}&\vec{j^\prime}\cdot\vec{j}&\vec{j^\prime}\cdot\vec{k}\\\vec{k^\prime}\cdot\vec{i}&\vec{k^\prime}\cdot\vec{j}&\vec{k^\prime}\cdot\vec{k}\\\end{bmatrix}\begin{bmatrix}x\\y\\z\end{bmatrix}"/>
+
+按照下图取自转角phi为零，并取得另外两个欧拉角psi和theta（引自百度百科）：
+
+<img src="https://bkimg.cdn.bcebos.com/pic/37d12f2eb9389b505ee3a65d8535e5dde7116ea4?x-bce-process=image/watermark,image_d2F0ZXIvYmFpa2U3Mg==,g_7,xp_5,yp_5/format,f_auto"/>
+
+则：
+
+<img src="https://latex.codecogs.com/gif.latex?\begin{bmatrix}\vec{i^\prime}\cdot\vec{i}&\vec{i^\prime}\cdot\vec{j}&\vec{i^\prime}\cdot\vec{k}\\\vec{j^\prime}\cdot\vec{i}&\vec{j^\prime}\cdot\vec{j}&\vec{j^\prime}\cdot\vec{k}\\\vec{k^\prime}\cdot\vec{i}&\vec{k^\prime}\cdot\vec{j}&\vec{k^\prime}\cdot\vec{k}\\\end{bmatrix}=\begin{bmatrix}\cos\psi&\sin\psi&0\\-\sin\psi\cos\theta&\cos\psi\cos\theta&\sin\theta\\\sin\psi\sin\theta&-\cos\psi\sin\theta&\cos\theta\\\end{bmatrix}"/>
+
+至此，我们的坐标变换可以表示为：
+
+<img src="https://latex.codecogs.com/gif.latex?\begin{bmatrix}x^\prime\\y^\prime\\z^\prime\end{bmatrix}=\begin{bmatrix}\cos\psi&\sin\psi&0\\-\sin\psi\cos\theta&\cos\psi\cos\theta&\sin\theta\\\sin\psi\sin\theta&-\cos\psi\sin\theta&\cos\theta\\\end{bmatrix}\begin{bmatrix}x\\y\\z\end{bmatrix}"/>
+
+该坐标变换被psi和theta两个参数唯一确定。
+
+若考虑新坐标系下的自转，可以对自转角phi补充坐标变换：
+
+<img src="https://latex.codecogs.com/gif.latex?\begin{bmatrix}x^\prime\\y^\prime\end{bmatrix}=\begin{bmatrix}\cos\varphi&\sin\varphi\\-\sin\varphi&\cos\varphi\\\end{bmatrix}\begin{bmatrix}x\\y\end{bmatrix}"/>
+
+则三维空间中的旋转变换被psi、theta和phi唯一确定。我们将其分开处理有望简化算法设计和提高性能。变换可以按照我们给出的顺序依次进行，这与欧拉角的定义是一致的。
 
 ## 接口函数定义
 
