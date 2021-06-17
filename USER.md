@@ -154,15 +154,15 @@
 
     Vector<double, 3> p;
 
-粒子的动量信息，存储为直角坐标系下的三个分量。其单位一般为GeV/c。
+粒子的动量信息，存储为直角坐标系下的三个分量。其单位一般为<img src="https://latex.codecogs.com/svg.latex?\inline\rm%20GeV/c"/>。
 
     double e;
 
-粒子的能量信息。其单位一般为GeV。
+粒子的能量信息。其单位一般为<img src="https://latex.codecogs.com/svg.latex?\inline\rm%20GeV"/>。
 
     double m;
 
-粒子的静质量信息。其单位一般为GeV/c^2。
+粒子的静质量信息。其单位一般为<img src="https://latex.codecogs.com/svg.latex?\inline\rm%20GeV/c^2"/>。
 
 #### 函数成员 
 
@@ -172,11 +172,11 @@
 
 根据狭义相对论关系有：
 
-<img src="https://latex.codecogs.com/gif.latex?\vec{p}=\frac{m\vec{v}}{\sqrt{1-(v/c)^2}},\%20E=\frac{mc^2}{\sqrt{1-(v/c)^2}}"/>
+<img src="https://latex.codecogs.com/svg.latex?\vec{p}=\frac{m\vec{v}}{\sqrt{1-(v/c)^2}},\%20E=\frac{mc^2}{\sqrt{1-(v/c)^2}}"/>
 
 则：
 
-<img src="https://latex.codecogs.com/gif.latex?\vec{v}/c=\frac{\vec{p}/({\rm%20GeV}/c)}{E/{\rm%20GeV}}"/>
+<img src="https://latex.codecogs.com/svg.latex?\vec{v}/c=\frac{\vec{p}/({\rm%20GeV}/c)}{E/{\rm%20GeV}}"/>
 
 可见在高能物理常用的单位制下使用动量除以能量计算粒子速度是比较合理的。
 
@@ -388,43 +388,43 @@
 
 坐标变换类。我们对转动变换的处理方式如下：设
 
-<img src="https://latex.codecogs.com/gif.latex?\begin{bmatrix}\vec{i^\prime}&\vec{j^\prime}&\vec{k^\prime}\end{bmatrix}\begin{bmatrix}x^\prime\\y^\prime\\z^\prime\end{bmatrix}=\begin{bmatrix}\vec{i}&\vec{j}&\vec{k}\end{bmatrix}\begin{bmatrix}x\\y\\z\end{bmatrix}"/>
+<img src="https://latex.codecogs.com/svg.latex?\begin{bmatrix}\vec{i^\prime}&\vec{j^\prime}&\vec{k^\prime}\end{bmatrix}\begin{bmatrix}x^\prime\\y^\prime\\z^\prime\end{bmatrix}=\begin{bmatrix}\vec{i}&\vec{j}&\vec{k}\end{bmatrix}\begin{bmatrix}x\\y\\z\end{bmatrix}"/>
 
 其中字母加撇不表示转置，而表示新坐标或新基底。两边同时左乘新坐标基底构成的矩阵之转置得到：
 
-<img src="https://latex.codecogs.com/gif.latex?\begin{bmatrix}\vec{i^\prime}&\vec{j^\prime}&\vec{k^\prime}\end{bmatrix}^T\begin{bmatrix}\vec{i^\prime}&\vec{j^\prime}&\vec{k^\prime}\end{bmatrix}\begin{bmatrix}x^\prime\\y^\prime\\z^\prime\end{bmatrix}=\begin{bmatrix}\vec{i^\prime}&\vec{j^\prime}&\vec{k^\prime}\end{bmatrix}^T\begin{bmatrix}\vec{i}&\vec{j}&\vec{k}\end{bmatrix}\begin{bmatrix}x\\y\\z\end{bmatrix}"/>
+<img src="https://latex.codecogs.com/svg.latex?\begin{bmatrix}\vec{i^\prime}&\vec{j^\prime}&\vec{k^\prime}\end{bmatrix}^T\begin{bmatrix}\vec{i^\prime}&\vec{j^\prime}&\vec{k^\prime}\end{bmatrix}\begin{bmatrix}x^\prime\\y^\prime\\z^\prime\end{bmatrix}=\begin{bmatrix}\vec{i^\prime}&\vec{j^\prime}&\vec{k^\prime}\end{bmatrix}^T\begin{bmatrix}\vec{i}&\vec{j}&\vec{k}\end{bmatrix}\begin{bmatrix}x\\y\\z\end{bmatrix}"/>
 
 假设新基底为标准正交基，则：
 
-<img src="https://latex.codecogs.com/gif.latex?\begin{bmatrix}\vec{i^\prime}&\vec{j^\prime}&\vec{k^\prime}\end{bmatrix}^T\begin{bmatrix}\vec{i^\prime}&\vec{j^\prime}&\vec{k^\prime}\end{bmatrix}=I"/>
+<img src="https://latex.codecogs.com/svg.latex?\begin{bmatrix}\vec{i^\prime}&\vec{j^\prime}&\vec{k^\prime}\end{bmatrix}^T\begin{bmatrix}\vec{i^\prime}&\vec{j^\prime}&\vec{k^\prime}\end{bmatrix}=I"/>
 
 又由于：
 
-<img src="https://latex.codecogs.com/gif.latex?\begin{bmatrix}\vec{i^\prime}&\vec{j^\prime}&\vec{k^\prime}\end{bmatrix}^T\begin{bmatrix}\vec{i}&\vec{j}&\vec{k}\end{bmatrix}=\begin{bmatrix}\vec{i^\prime}\cdot\vec{i}&\vec{i^\prime}\cdot\vec{j}&\vec{i^\prime}\cdot\vec{k}\\\vec{j^\prime}\cdot\vec{i}&\vec{j^\prime}\cdot\vec{j}&\vec{j^\prime}\cdot\vec{k}\\\vec{k^\prime}\cdot\vec{i}&\vec{k^\prime}\cdot\vec{j}&\vec{k^\prime}\cdot\vec{k}\\\end{bmatrix}"/>
+<img src="https://latex.codecogs.com/svg.latex?\begin{bmatrix}\vec{i^\prime}&\vec{j^\prime}&\vec{k^\prime}\end{bmatrix}^T\begin{bmatrix}\vec{i}&\vec{j}&\vec{k}\end{bmatrix}=\begin{bmatrix}\vec{i^\prime}\cdot\vec{i}&\vec{i^\prime}\cdot\vec{j}&\vec{i^\prime}\cdot\vec{k}\\\vec{j^\prime}\cdot\vec{i}&\vec{j^\prime}\cdot\vec{j}&\vec{j^\prime}\cdot\vec{k}\\\vec{k^\prime}\cdot\vec{i}&\vec{k^\prime}\cdot\vec{j}&\vec{k^\prime}\cdot\vec{k}\\\end{bmatrix}"/>
 
 故：
 
-<img src="https://latex.codecogs.com/gif.latex?\begin{bmatrix}x^\prime\\y^\prime\\z^\prime\end{bmatrix}=\begin{bmatrix}\vec{i^\prime}\cdot\vec{i}&\vec{i^\prime}\cdot\vec{j}&\vec{i^\prime}\cdot\vec{k}\\\vec{j^\prime}\cdot\vec{i}&\vec{j^\prime}\cdot\vec{j}&\vec{j^\prime}\cdot\vec{k}\\\vec{k^\prime}\cdot\vec{i}&\vec{k^\prime}\cdot\vec{j}&\vec{k^\prime}\cdot\vec{k}\\\end{bmatrix}\begin{bmatrix}x\\y\\z\end{bmatrix}"/>
+<img src="https://latex.codecogs.com/svg.latex?\begin{bmatrix}x^\prime\\y^\prime\\z^\prime\end{bmatrix}=\begin{bmatrix}\vec{i^\prime}\cdot\vec{i}&\vec{i^\prime}\cdot\vec{j}&\vec{i^\prime}\cdot\vec{k}\\\vec{j^\prime}\cdot\vec{i}&\vec{j^\prime}\cdot\vec{j}&\vec{j^\prime}\cdot\vec{k}\\\vec{k^\prime}\cdot\vec{i}&\vec{k^\prime}\cdot\vec{j}&\vec{k^\prime}\cdot\vec{k}\\\end{bmatrix}\begin{bmatrix}x\\y\\z\end{bmatrix}"/>
 
-按照下图取自转角phi为零，并取得另外两个欧拉角psi和theta（引自百度百科）：
+按照下图取自转角<img src="https://latex.codecogs.com/svg.latex?\inline\varphi=0"/>，考虑另外两个欧拉角<img src="https://latex.codecogs.com/svg.latex?\inline\psi"/>和<img src="https://latex.codecogs.com/svg.latex?\inline\theta"/>带来的转动（图引自百度百科）：
 
 <img src="https://bkimg.cdn.bcebos.com/pic/37d12f2eb9389b505ee3a65d8535e5dde7116ea4?x-bce-process=image/watermark,image_d2F0ZXIvYmFpa2U3Mg==,g_7,xp_5,yp_5/format,f_auto"/>
 
 则：
 
-<img src="https://latex.codecogs.com/gif.latex?\begin{bmatrix}\vec{i^\prime}\cdot\vec{i}&\vec{i^\prime}\cdot\vec{j}&\vec{i^\prime}\cdot\vec{k}\\\vec{j^\prime}\cdot\vec{i}&\vec{j^\prime}\cdot\vec{j}&\vec{j^\prime}\cdot\vec{k}\\\vec{k^\prime}\cdot\vec{i}&\vec{k^\prime}\cdot\vec{j}&\vec{k^\prime}\cdot\vec{k}\\\end{bmatrix}=\begin{bmatrix}\cos\psi&\sin\psi&0\\-\sin\psi\cos\theta&\cos\psi\cos\theta&\sin\theta\\\sin\psi\sin\theta&-\cos\psi\sin\theta&\cos\theta\\\end{bmatrix}"/>
+<img src="https://latex.codecogs.com/svg.latex?\begin{bmatrix}\vec{i^\prime}\cdot\vec{i}&\vec{i^\prime}\cdot\vec{j}&\vec{i^\prime}\cdot\vec{k}\\\vec{j^\prime}\cdot\vec{i}&\vec{j^\prime}\cdot\vec{j}&\vec{j^\prime}\cdot\vec{k}\\\vec{k^\prime}\cdot\vec{i}&\vec{k^\prime}\cdot\vec{j}&\vec{k^\prime}\cdot\vec{k}\\\end{bmatrix}=\begin{bmatrix}\cos\psi&\sin\psi&0\\-\sin\psi\cos\theta&\cos\psi\cos\theta&\sin\theta\\\sin\psi\sin\theta&-\cos\psi\sin\theta&\cos\theta\\\end{bmatrix}"/>
 
 至此，我们的坐标变换可以表示为：
 
-<img src="https://latex.codecogs.com/gif.latex?\begin{bmatrix}x^\prime\\y^\prime\\z^\prime\end{bmatrix}=\begin{bmatrix}\cos\psi&\sin\psi&0\\-\sin\psi\cos\theta&\cos\psi\cos\theta&\sin\theta\\\sin\psi\sin\theta&-\cos\psi\sin\theta&\cos\theta\\\end{bmatrix}\begin{bmatrix}x\\y\\z\end{bmatrix}"/>
+<img src="https://latex.codecogs.com/svg.latex?\begin{bmatrix}x^\prime\\y^\prime\\z^\prime\end{bmatrix}=\begin{bmatrix}\cos\psi&\sin\psi&0\\-\sin\psi\cos\theta&\cos\psi\cos\theta&\sin\theta\\\sin\psi\sin\theta&-\cos\psi\sin\theta&\cos\theta\\\end{bmatrix}\begin{bmatrix}x\\y\\z\end{bmatrix}"/>
 
-该坐标变换被psi和theta两个参数唯一确定。
+该坐标变换被进动角<img src="https://latex.codecogs.com/svg.latex?\inline\psi"/>和章动角<img src="https://latex.codecogs.com/svg.latex?\inline\theta"/>两个参数唯一确定。
 
-若考虑新坐标系下的自转，可以对自转角phi补充坐标变换：
+若考虑新坐标系下的自转，可以对自转角<img src="https://latex.codecogs.com/svg.latex?\inline\varphi"/>补充坐标变换：
 
-<img src="https://latex.codecogs.com/gif.latex?\begin{bmatrix}x^\prime\\y^\prime\end{bmatrix}=\begin{bmatrix}\cos\varphi&\sin\varphi\\-\sin\varphi&\cos\varphi\\\end{bmatrix}\begin{bmatrix}x\\y\end{bmatrix}"/>
+<img src="https://latex.codecogs.com/svg.latex?\begin{bmatrix}x^\prime\\y^\prime\end{bmatrix}=\begin{bmatrix}\cos\varphi&\sin\varphi\\-\sin\varphi&\cos\varphi\\\end{bmatrix}\begin{bmatrix}x\\y\end{bmatrix}"/>
 
-则三维空间中的旋转变换被psi、theta和phi唯一确定。我们将其分开处理有望简化算法设计和提高性能。变换可以按照我们给出的顺序依次进行，这与欧拉角的定义是一致的。
+则三维空间中的旋转变换被<img src="https://latex.codecogs.com/svg.latex?\inline\psi"/>、<img src="https://latex.codecogs.com/svg.latex?\inline\theta"/>和<img src="https://latex.codecogs.com/svg.latex?\inline\varphi"/>唯一确定。我们将其分开处理有望简化算法设计和提高性能。变换可以按照我们给出的顺序依次进行，这与欧拉角的定义是一致的。
 
 ## 接口函数定义
 
