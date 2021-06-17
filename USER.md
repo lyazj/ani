@@ -422,7 +422,7 @@
 
 若考虑新坐标系下的自转，可以对自转角<img src="https://latex.codecogs.com/svg.latex?\inline\varphi"/>补充坐标变换：
 
-<img src="https://latex.codecogs.com/svg.latex?\begin{bmatrix}x^\prime\\y^\prime\end{bmatrix}=\begin{bmatrix}\cos\varphi&\sin\varphi\\-\sin\varphi&\cos\varphi\\\end{bmatrix}\begin{bmatrix}x\\y\end{bmatrix}"/>
+<img src="https://latex.codecogs.com/svg.latex?\begin{bmatrix}x^\prime^\prime\\y^\prime^\prime\end{bmatrix}=\begin{bmatrix}\cos\varphi&\sin\varphi\\-\sin\varphi&\cos\varphi\\\end{bmatrix}\begin{bmatrix}x^\prime\\y^\prime\end{bmatrix}"/>
 
 则三维空间中的旋转变换被<img src="https://latex.codecogs.com/svg.latex?\inline\psi"/>、<img src="https://latex.codecogs.com/svg.latex?\inline\theta"/>和<img src="https://latex.codecogs.com/svg.latex?\inline\varphi"/>唯一确定。我们将其分开处理有望简化算法设计和提高性能。变换可以按照我们给出的顺序依次进行，这与欧拉角的定义是一致的。
 
